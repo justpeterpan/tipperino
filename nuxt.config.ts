@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ['@nuxthub/core', "@nuxt/eslint"],
+  modules: ['@nuxthub/core', "@nuxt/eslint", "@nuxt/ui"],
   hub: {
     database: true,
     kv: true,
