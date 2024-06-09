@@ -4,6 +4,7 @@ export default defineNuxtConfig({
   modules: ["@nuxthub/core", "@nuxt/eslint", "@nuxt/ui", "nuxt-auth-utils"],
   hub: {
     database: true,
+    remote: true,
   },
   nitro: {
     experimental: {

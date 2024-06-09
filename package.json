@@ -9,7 +9,8 @@
     "deploy": "nuxthub deploy",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "db:g": "drizzle-kit generate"
   },
   "dependencies": {
     "@nuxt/eslint": "^0.3.13",

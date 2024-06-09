@@ -9,6 +9,7 @@ const { loggedIn, clear } = useUserSession();
     <div class="size-full grid justify-items-center items-center">image</div>
     <div class="size-full grid justify-items-center items-center">
       <UButton v-if="!loggedIn" to="/api/auth/auth0" label="Login" external />
+      <UButton v-else label="Logout" @click="clear" />
     </div>
   </main>
 </template>
