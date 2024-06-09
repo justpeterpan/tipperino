@@ -1,5 +1,5 @@
 <template>
-  <main>
-    <MessagesPanel />
-  </main>
+  <div>
+    <SplashScreen />
+  </div>
 </template>
