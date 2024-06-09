@@ -19,7 +19,7 @@ export default oauth.auth0EventHandler({
     }
     await setUserSession(event, {
       user: {
-        auth0: user.email,
+        id: user.email,
       },
     });
 

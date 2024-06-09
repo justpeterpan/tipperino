@@ -6,6 +6,11 @@ export default defineNuxtConfig({
     database: true,
     remote: true,
   },
+  runtimeConfig: {
+    public: {
+      api: process.env.API || "",
+    },
+  },
   nitro: {
     experimental: {
       // Enable Server API documentation within NuxtHub

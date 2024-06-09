@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-const { session, user } = useUserSession();
+definePageMeta({
+  middleware: "auth",
+});
 </script>
 
 <template>
-  <div>
-    <h1>home</h1>
-    <div>{{ user }}</div>
-    <div>{{ session }}</div>
-  </div>
+  <div>Ohai</div>
 </template>
