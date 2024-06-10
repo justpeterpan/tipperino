@@ -22,7 +22,6 @@ const matchesPerDate = Array.from(matchDates).map((date) => {
 </script>
 <template>
   <div>
-    <h1 class="text-xl/6 font-thin font-serif italic pb-10">gruppenphase</h1>
     <MatchList :matches-per-date="matchesPerDate" />
   </div>
 </template>

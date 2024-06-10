@@ -33,9 +33,7 @@ const mergedMenuItems = computed(() => [
 
 <template>
   <div>
-    <nav
-      class="absolute w-full px-10 h-16 mb-16 flex items-center border-b border-emerald-400/20"
-    >
+    <nav class="absolute w-full px-10 h-16 mb-16 flex items-center">
       <ul class="flex justify-between w-full">
         <li>
           <NuxtLink to="/">
