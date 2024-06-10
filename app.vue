@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { loggedIn, clear, user } = useUserSession();
+const { loggedIn, clear } = useUserSession();
 
 useSeoMeta({
   title: "Tipperino",
@@ -32,20 +32,15 @@ const mergedMenuItems = computed(() => [
 </script>
 
 <template>
-  <div class="bg-amber">
-    <nav class="h-16 w-full flex items-center just">
-      <ul class="w-full flex justify-between px-4">
-        <li>
-          <NuxtLink to="/">
-            <UIcon name="i-heroicons-trophy-20-solid w-6 h-6" />
-          </NuxtLink>
-        </li>
+  <div>
+    <nav class="h-16 w-full flex items-center">
+      <ul class="w-full flex flex-row-reverse justify-between px-4">
         <li v-if="loggedIn">
           <UserMenu :menu-items="mergedMenuItems" @clicked="refreshMembers" />
         </li>
       </ul>
     </nav>
-    <NuxtPage class="pt-8 h-dvh px-4" />
+    <NuxtPage class="pt-2 px-4" />
     <UNotifications />
   </div>
 </template>

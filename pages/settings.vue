@@ -83,61 +83,92 @@ async function decline(id: number) {
 
 <template>
   <div>
-    <h1>Settings</h1>
-    <UDivider class="w-full py-4" />
-    <h2>Your Groups</h2>
-    <div class="pb-4">
-      <ul>
-        <li v-for="group of groups" :key="group.id" class="ml-4">
-          {{ group.name }}
-        </li>
-      </ul>
-    </div>
-    <h2>Member of</h2>
-    <div class="pb-4">
-      <ul>
-        <li class="ml-4" v-for="{ id, name } of members" :key="id">
-          {{ name }}
-        </li>
-      </ul>
-    </div>
-    <h2>Invitations to join</h2>
-    <div class="pb-4">
-      <ul v-if="invites?.length">
-        <li class="ml-4" v-for="invite of invites" :key="invite.inviteId">
-          <div class="flex w-64 items-center gap-2">
-            <div class="w-32">
-              {{ invite.status === 0 ? invite.name : "-" }}
+    <UIcon name="i-heroicons-cog" class="text-xl" />
+    <h1 class="text-3xl/6 font-black pb-4">Settings</h1>
+
+    <UDivider class="w-full py-8" icon="i-heroicons-star-solid" />
+
+    <section>
+      <h2 class="font-thin mb-2">Your groups</h2>
+      <div class="grid grid-cols-2 gap-2 pb-4">
+        <UCard v-for="group of groups" :key="group.id">
+          <div>
+            <UIcon name="i-heroicons-user-group-20-solid" />
+            <div>
+              {{ group.name }}
             </div>
-            <UButton
-              icon="i-heroicons-check"
-              class="max-w-fit"
-              @click="accept(invite.inviteId, invite.groupId)"
-            />
-            <UButton
-              icon="i-heroicons-x-mark"
-              class="max-w-fit"
-              @click="decline(invite.inviteId)"
-            />
           </div>
-        </li>
-      </ul>
-      <div v-else>-</div>
-    </div>
-    <UDivider class="w-full py-4" />
-    <h2>Invite User</h2>
-    <div class="grid grid-cols-1 w-64 gap-2">
-      <USelectMenu
-        v-model="selected"
-        :options="groups"
-        placeholder="Select group"
-        option-attribute="name"
+        </UCard>
+      </div>
+      <UButton
+        label="Create Group"
+        @click="isOpen = true"
+        class="w-32 mb-8"
+        size="xl"
       />
-      <UInput v-model="inviteName" placeholder="enter email" />
-      <UButton label="Invite" :disabled="!inviteName" @click="invite()" />
-    </div>
-    <UDivider class="w-full py-4" />
-    <UButton label="Create Group" @click="isOpen = true" />
+
+      <h2 class="font-thin mb-2">Member of</h2>
+      <div class="grid grid-cols-2 gap-2 pb-8">
+        <UCard v-for="{ id, name } of members" :key="id">
+          <div>
+            <UIcon name="i-heroicons-user-group-20-solid" />
+            <div>
+              {{ name }}
+            </div>
+          </div>
+        </UCard>
+      </div>
+    </section>
+
+    <section v-if="invites?.length">
+      <h2>Invitations to join</h2>
+      <div class="pb-4">
+        <ul v-if="invites?.length">
+          <li class="ml-4" v-for="invite of invites" :key="invite.inviteId">
+            <div class="flex w-64 items-center gap-2">
+              <div class="w-32">
+                {{ invite.status === 0 ? invite.name : "-" }}
+              </div>
+              <UButton
+                icon="i-heroicons-check"
+                class="max-w-fit"
+                @click="accept(invite.inviteId, invite.groupId)"
+              />
+              <UButton
+                icon="i-heroicons-x-mark"
+                class="max-w-fit"
+                @click="decline(invite.inviteId)"
+              />
+            </div>
+          </li>
+        </ul>
+        <div v-else>-</div>
+      </div>
+    </section>
+
+    <UDivider class="w-full py-8" icon="i-heroicons-star-solid" />
+
+    <section class="pb-8">
+      <h2 class="font-thin mb-2">Invite user</h2>
+      <div class="grid grid-cols-1 w-full gap-2 pb-2">
+        <USelectMenu
+          v-model="selected"
+          :options="groups"
+          placeholder="Select group"
+          option-attribute="name"
+          size="xl"
+        />
+        <UInput v-model="inviteName" placeholder="enter email" size="xl" />
+      </div>
+      <UButton
+        label="Invite"
+        :disabled="!inviteName"
+        @click="invite()"
+        class="w-32"
+        size="xl"
+      />
+    </section>
+
     <UModal
       v-model="isOpen"
       :ui="{
@@ -154,6 +185,7 @@ async function decline(id: number) {
             v-model="groupName"
             label="Name"
             placeholder="enter group name"
+            size="xl"
           />
           <div class="grid grid-cols-2 gap-2 w-full">
             <UButton
@@ -161,8 +193,9 @@ async function decline(id: number) {
               @click="create"
               :loading="isLoading"
               :disabled="!groupName"
+              size="xl"
             />
-            <UButton label="Cancel" @click="cancel" />
+            <UButton label="Cancel" @click="cancel" size="xl" />
           </div>
         </div>
       </UCard>
