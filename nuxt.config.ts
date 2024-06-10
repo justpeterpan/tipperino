@@ -6,6 +6,16 @@ export default defineNuxtConfig({
     database: true,
     remote: true,
   },
+  $development: {
+    nitro: {
+      storage: {
+        matchesCache: {
+          driver: "fs",
+          base: "matchesCache",
+        },
+      },
+    },
+  },
   runtimeConfig: {
     public: {
       api: process.env.API || "",

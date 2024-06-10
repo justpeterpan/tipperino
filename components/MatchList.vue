@@ -1,41 +1,13 @@
 <script lang="ts" setup>
 import type { Match } from "~/types";
 
-const route = useRoute();
-const { data: group } = await useFetch(`/api/groups/${route.params.id}`);
-const { data: matches } = await useFetch<Match[]>(
-  `${useRuntimeConfig().public.api}/getmatchdata/em2024/2024`
-);
-
-if (!group.value) {
-  navigateTo("/");
-}
-
-const matchDates = new Set(
-  matches.value
-    ?.filter(
-      (match) =>
-        !match.group.groupName.includes("final") &&
-        !match.group.groupName.includes("Finale")
-    )
-    .map((match) => match.matchDateTime.slice(0, 10))
-);
-
-const matchesPerDate = Array.from(matchDates).map((date) => {
-  return {
-    date,
-    matches: matches.value?.filter((match) =>
-      match.matchDateTime.includes(date)
-    ),
-  };
-});
+defineProps<{
+  matchesPerDate: { date: string; matches: Match[] | undefined }[];
+}>();
 </script>
 
 <template>
-  <div class="pl-10 pb-10">
-    <h2 class="font-thin lowercase italic text-sm/3">{{ group?.name }}</h2>
-    <h1 class="text-xl/6 font-thin font-serif italic pb-10">gruppenphase</h1>
-
+  <div>
     <div v-for="date of matchesPerDate" class="pb-10">
       <div class="font-serif font-thin">
         {{ date.date }}

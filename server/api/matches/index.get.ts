@@ -1,26 +1,18 @@
-import { matches } from "~/server/database/schema";
-import type { Match } from "~/types";
+import { Match } from "~/types";
 
-export default eventHandler(async () => {
-  const config = useRuntimeConfig();
-  const matchesFromApi = await $fetch<Match[]>(
-    `${config.public.api}/getmatchdata/em2024/2024`
-  );
-
-  const matchesForDB = matchesFromApi.map((match) => {
-    return {
-      id: match.matchID,
-      date: match.matchDateTime,
-      dateUTC: match.matchDateTimeUTC,
-      locationId: match.location.locationID,
-    };
-  });
-
-  const batchSize = 10;
-
-  for (let i = 0; i < matchesForDB.length; i += batchSize) {
-    const batch = matchesForDB.slice(i, i + batchSize);
-    await useDB().insert(matches).values(batch);
+export default cachedEventHandler(
+  async () => {
+    console.log("fetching");
+    const matches = await $fetch<Match[]>(
+      `${useRuntimeConfig().public.api}/getmatchdata/em2024/2024`
+    );
+    return matches;
+  },
+  {
+    base: "matchesCache",
+    getKey: () => "matchesCache",
+    shouldBypassCache: () => false,
+    maxAge: 60 * 60 * 24 * 7,
+    staleMaxAge: 60 * 60 * 24 * 30,
   }
-  return matchesFromApi;
-});
+);
