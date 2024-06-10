@@ -1,15 +1,34 @@
 <script setup lang="ts">
-const { loggedIn, clear } = useUserSession();
+const { loggedIn, clear, user } = useUserSession();
 
 useSeoMeta({
   title: "Tipperino",
   description: "Gib Stoff, Junge",
 });
 
-const menuItems = [
+const { data: members, refresh: refreshMembers } = await useFetch(
+  "/api/members",
+  {
+    transform: (data) => {
+      return data.map((member) => {
+        return {
+          label: member.name ?? "",
+          target: `/groups/${member.id}`,
+        };
+      });
+    },
+  }
+);
+
+const menuItems = ref([
   { label: "Settings", target: "/settings" },
   { label: "Logout", action: clear },
-];
+]);
+
+const mergedMenuItems = computed(() => [
+  ...(members.value ?? []),
+  ...menuItems.value,
+]);
 </script>
 
 <template>
@@ -24,7 +43,7 @@ const menuItems = [
           </NuxtLink>
         </li>
         <li v-if="loggedIn">
-          <UserMenu :menu-items="menuItems" />
+          <UserMenu :menu-items="mergedMenuItems" @clicked="refreshMembers" />
         </li>
       </ul>
     </nav>

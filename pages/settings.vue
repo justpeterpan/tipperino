@@ -34,6 +34,7 @@ async function create() {
   });
   isLoading.value = false;
   await refreshGroups();
+  await refreshMembers();
   isOpen.value = false;
   groupName.value = "";
   toast.add({
