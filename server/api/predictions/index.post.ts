@@ -10,17 +10,6 @@ export default eventHandler(async (event) => {
     team2Name,
     team2Score,
   } = await readBody(event);
-  console.log(
-    match,
-    user.id,
-    group,
-    team1Id,
-    team1Name,
-    team1Score,
-    team2Id,
-    team2Name,
-    team2Score
-  );
 
   const res = await useDB()
     .insert(tables.predictions)

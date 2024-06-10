@@ -2,7 +2,7 @@ import { Match } from "~/types";
 
 export default cachedEventHandler(
   async () => {
-    console.log("fetching");
+    console.info("fetching matches");
     const matches = await $fetch<Match[]>(
       `${useRuntimeConfig().public.api}/getmatchdata/em2024/2024`
     );

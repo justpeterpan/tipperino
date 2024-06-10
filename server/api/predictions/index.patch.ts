@@ -1,7 +1,6 @@
 export default eventHandler(async (event) => {
   const { user } = await requireUserSession(event);
-  const { match, group, team1Score, team2Score } = await readBody(event);
-  console.log(match, user.id, group, team1Score, team2Score);
+  const { group, team1Score, team2Score } = await readBody(event);
 
   const res = await useDB()
     .update(tables.predictions)

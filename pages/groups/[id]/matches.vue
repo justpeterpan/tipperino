@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-const { data: matches } = await useFetch("/api/matches");
+definePageMeta({
+  middleware: "auth",
+});
+const { data: matches } = await useFetch("/api/matches", { lazy: true });
 
 const matchDates = new Set(
   matches.value

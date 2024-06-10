@@ -52,9 +52,13 @@ function formatMatchTime(matchDateTime: string) {
           }}
         </div>
       </div>
-      <UAccordion :items="date.matches">
+      <UAccordion :items="date.matches" multiple>
         <template #default="{ item }">
-          <UButton color="white" variant="ghost" class="ml-0 p-0 max-w-fit">
+          <UButton
+            color="white"
+            variant="ghost"
+            class="ml-0 pl-0 pb-4 max-w-fit dark:hover:bg-transparent"
+          >
             <div class="grid grid-row-2">
               <div
                 class="text-sm flex gap-3 font-serif italic font-thin items-center place-self-start"
@@ -90,6 +94,7 @@ function formatMatchTime(matchDateTime: string) {
             :group-id="route.params.id as string"
             :predictions="predictions"
             @saved="refreshPredictions"
+            class="-mt-2 pb-4"
           />
         </template>
       </UAccordion>

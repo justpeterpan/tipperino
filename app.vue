@@ -13,7 +13,7 @@ const { data: members, refresh: refreshMembers } = await useFetch(
       return data.map((member) => {
         return {
           label: member.name ?? "",
-          target: `/groups/${member.id}`,
+          target: `/groups/${member.id}/matches`,
         };
       });
     },
