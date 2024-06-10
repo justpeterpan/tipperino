@@ -32,9 +32,9 @@ const mergedMenuItems = computed(() => [
 </script>
 
 <template>
-  <div>
-    <nav class="absolute w-full px-10 h-16 mb-16 flex items-center">
-      <ul class="flex justify-between w-full">
+  <div class="bg-amber">
+    <nav class="border h-16 w-full flex items-center just">
+      <ul class="w-full flex border justify-between px-4">
         <li>
           <NuxtLink to="/">
             <UIcon name="i-heroicons-trophy-20-solid w-6 h-6" />
@@ -45,7 +45,7 @@ const mergedMenuItems = computed(() => [
         </li>
       </ul>
     </nav>
-    <NuxtPage class="pt-20 h-dvh px-4" />
+    <NuxtPage class="pt-8 h-dvh px-4" />
     <UNotifications />
   </div>
 </template>

@@ -5,8 +5,8 @@ defineProps<{
 }>();
 </script>
 <template>
-  <div>
-    <div class="flex gap-2 mb-10">
+  <div class="border max-w-fit">
+    <div class="flex gap-2 mb-8">
       <ULink v-for="route of routes" :key="route.name" :to="route.path">
         <h1
           class="text-xl/6 font-thin font-serif italic"

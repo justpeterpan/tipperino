@@ -10,7 +10,7 @@ if (!group.value) navigateTo("/");
 </script>
 
 <template>
-  <div class="pl-10 pb-10">
+  <div>
     <SubNav
       :routes="routes"
       :active="route.path.includes('matches') ? 'matches' : 'standings'"
