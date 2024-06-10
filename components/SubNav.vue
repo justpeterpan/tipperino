@@ -5,7 +5,7 @@ defineProps<{
 }>();
 </script>
 <template>
-  <div class="border max-w-fit">
+  <div class="max-w-fit">
     <div class="flex gap-2 mb-8">
       <ULink v-for="route of routes" :key="route.name" :to="route.path">
         <h1

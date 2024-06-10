@@ -42,7 +42,7 @@ function formatMatchTime(matchDateTime: string) {
 <template>
   <div class="max-w-fit">
     <div v-for="date of transformedMatches" class="pb-10 max-w-fit">
-      <div class="flex items-center gap-2 pb-1 border max-w-fit">
+      <div class="flex items-center gap-2 pb-1 max-w-fit">
         <UIcon name="i-heroicons-calendar" />
         <div class="font-serif font-thin">
           {{
@@ -57,14 +57,19 @@ function formatMatchTime(matchDateTime: string) {
           <UButton color="white" variant="ghost" class="ml-0 p-0 max-w-fit">
             <div class="grid grid-row-2">
               <div
-                class="text-sm border flex gap-1 font-serif italic font-thin items-center place-self-start"
+                class="text-sm flex gap-3 font-serif italic font-thin items-center place-self-start"
               >
-                <UIcon name="i-heroicons-clock" />
-                {{ formatMatchTime(item.matchDateTime) }},
-                {{ item.group.groupName }}
+                <div class="items-center flex gap-1">
+                  <UIcon name="i-heroicons-clock" />
+                  {{ formatMatchTime(item.matchDateTime) }}
+                </div>
+                <div class="flex items-center gap-1">
+                  <UIcon name="i-heroicons-user-group-20-solid" />
+                  {{ item.group.groupName }}
+                </div>
               </div>
               <div
-                class="flex border flex-row gap-2 items-center font-black uppercase text-xl sm:text-4xl tracking-[-0.06em]"
+                class="flex flex-row gap-2 items-center font-black uppercase text-xl sm:text-4xl tracking-[-0.06em]"
               >
                 <div class="team1">
                   {{ item.team1.teamName }}
