@@ -7,6 +7,10 @@ const { data: matches } = await useFetch<Match[]>(
   `${useRuntimeConfig().public.api}/getmatchdata/em2024/2024`
 );
 
+if (!group.value) {
+  navigateTo("/");
+}
+
 const matchDates = new Set(
   matches.value
     ?.filter(
