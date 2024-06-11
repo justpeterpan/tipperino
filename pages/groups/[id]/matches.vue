@@ -1,8 +1,17 @@
 <script lang="ts" setup>
+import type { Match } from "~/types";
+
+const nuxtApp = useNuxtApp();
+
 definePageMeta({
   middleware: "auth",
 });
-const { data: matches } = await useFetch("/api/matches", { lazy: true });
+
+const { data: matches } = await useFetch<Match[]>("/api/matches", {
+  getCachedData(key) {
+    return nuxtApp.payload.data[key] || nuxtApp.static.data[key];
+  },
+});
 
 const matchDates = new Set(
   matches.value

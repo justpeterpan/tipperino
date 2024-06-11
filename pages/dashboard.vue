@@ -2,18 +2,20 @@
 definePageMeta({
   middleware: "auth",
 });
+
 const { user } = useUserSession();
 const toast = useToast();
 
 const isOpen = defineModel("isOpen", { default: false });
 const isLoading = ref(false);
 
-const { data: members, refresh: refreshMembers } = await useFetch(
-  "/api/members"
-);
-const { data: groups, refresh: refreshGroups } = await useFetch("/api/groups");
+const { data: groups, refresh: refreshGroups } = await useFetch("/api/members");
 const { data: invites, refresh: refreshInvites } = await useFetch(
   "/api/invites"
+);
+
+const adminGroups = computed(() =>
+  groups.value?.filter((g) => g.role === "admin")
 );
 
 const groupName = defineModel("groupName", { default: "" });
@@ -25,7 +27,7 @@ function cancel() {
 
 async function create() {
   isLoading.value = true;
-  const res = await $fetch("/api/groups", {
+  const res = await useRequestFetch()("/api/groups", {
     method: "POST",
     body: {
       name: groupName.value,
@@ -34,7 +36,6 @@ async function create() {
   });
   isLoading.value = false;
   await refreshGroups();
-  await refreshMembers();
   isOpen.value = false;
   groupName.value = "";
   toast.add({
@@ -42,10 +43,11 @@ async function create() {
   });
 }
 
-const selected = ref(groups.value?.[0]);
+// filter members by admin role
+const selected = ref(adminGroups.value?.[0]);
 const inviteName = defineModel("inviteName", { default: "" });
 async function invite() {
-  const res = await $fetch("/api/invites", {
+  const res = await useRequestFetch()("/api/invites", {
     method: "POST",
     body: {
       group: selected.value?.id,
@@ -60,64 +62,63 @@ async function invite() {
 }
 
 async function accept(id: number, group: number) {
-  await $fetch("/api/invites/accept", {
+  await useRequestFetch()("/api/invites/accept", {
     method: "POST",
     body: { id, group },
   });
   await refreshInvites();
   await refreshGroups();
-  await refreshMembers();
 }
 
 async function decline(id: number) {
-  await $fetch("/api/invites/decline", {
+  await useRequestFetch()("/api/invites/decline", {
     method: "POST",
     body: { id },
   });
   await refreshInvites();
   // todo check if refresh is neccessary
   await refreshGroups();
-  await refreshMembers();
 }
 </script>
 
 <template>
   <div>
-    <UIcon name="i-heroicons-cog" class="text-xl" />
-    <h1 class="text-3xl/6 font-black pb-4">Settings</h1>
+    <h3 class="text-sm font-semibold">
+      Welcome,
+      <span class="font-serif font-thin italic">{{ user?.name }}</span>
+    </h3>
+    <h1 class="text-3xl/6 font-black pb-4">Dashboard</h1>
 
-    <UDivider class="w-full py-8" icon="i-heroicons-star-solid" />
-
+    <UDivider class="w-full py-8" label="✦" />
     <section>
-      <h2 class="font-thin mb-2">Your groups</h2>
-      <div class="grid grid-cols-2 gap-2 pb-4">
-        <UCard v-for="group of groups" :key="group.id">
-          <div>
-            <UIcon name="i-heroicons-user-group-20-solid" />
-            <div>
-              {{ group.name }}
-            </div>
-          </div>
-        </UCard>
+      <div v-if="groups?.length">
+        <h2 class="font-thin mb-2">Member of</h2>
+        <div class="grid grid-cols-2 gap-2 pb-8">
+          <ULink
+            v-for="{ id, name } of groups"
+            :key="id"
+            class="text-left"
+            :to="`/groups/${id}/matches`"
+          >
+            <UCard class="hover:shadow-md">
+              <div>
+                <UIcon name="i-heroicons-user-group-20-solid" />
+                <div>
+                  {{ name }}
+                </div>
+              </div>
+            </UCard>
+          </ULink>
+        </div>
       </div>
+
       <UButton
         label="Create Group"
         @click="isOpen = true"
         class="w-32 mb-8"
+        color="black"
         size="xl"
       />
-
-      <h2 class="font-thin mb-2">Member of</h2>
-      <div class="grid grid-cols-2 gap-2 pb-8">
-        <UCard v-for="{ id, name } of members" :key="id">
-          <div>
-            <UIcon name="i-heroicons-user-group-20-solid" />
-            <div>
-              {{ name }}
-            </div>
-          </div>
-        </UCard>
-      </div>
     </section>
 
     <section v-if="invites?.length">
@@ -132,11 +133,13 @@ async function decline(id: number) {
               <UButton
                 icon="i-heroicons-check"
                 class="max-w-fit"
+                color="black"
                 @click="accept(invite.inviteId, invite.groupId)"
               />
               <UButton
                 icon="i-heroicons-x-mark"
                 class="max-w-fit"
+                color="black"
                 @click="decline(invite.inviteId)"
               />
             </div>
@@ -146,14 +149,14 @@ async function decline(id: number) {
       </div>
     </section>
 
-    <UDivider class="w-full py-8" icon="i-heroicons-star-solid" />
+    <UDivider class="w-full py-8" label="✦" />
 
-    <section class="pb-8">
+    <section v-if="groups?.length" class="pb-8">
       <h2 class="font-thin mb-2">Invite user</h2>
       <div class="grid grid-cols-1 w-full gap-2 pb-2">
         <USelectMenu
           v-model="selected"
-          :options="groups"
+          :options="adminGroups"
           placeholder="Select group"
           option-attribute="name"
           size="xl"
@@ -165,6 +168,7 @@ async function decline(id: number) {
         :disabled="!inviteName"
         @click="invite()"
         class="w-32"
+        color="black"
         size="xl"
       />
     </section>
@@ -191,11 +195,18 @@ async function decline(id: number) {
             <UButton
               label="Create"
               @click="create"
+              color="black"
               :loading="isLoading"
               :disabled="!groupName"
               size="xl"
             />
-            <UButton label="Cancel" @click="cancel" size="xl" />
+            <UButton
+              label="Cancel"
+              @click="cancel"
+              variant="outline"
+              color="black"
+              size="xl"
+            />
           </div>
         </div>
       </UCard>

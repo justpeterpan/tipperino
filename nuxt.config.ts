@@ -27,11 +27,4 @@ export default defineNuxtConfig({
       openAPI: true,
     },
   },
-  app: {
-    head: {
-      bodyAttrs: {
-        class: "overflow-auto",
-      },
-    },
-  },
 });

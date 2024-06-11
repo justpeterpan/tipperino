@@ -35,7 +35,7 @@ function handleEdit() {
 }
 
 async function save() {
-  await $fetch("/api/predictions", {
+  await useRequestFetch()("/api/predictions", {
     method: isEditing.value ? "PATCH" : "POST",
     body: {
       team1Score: team1Score.value,

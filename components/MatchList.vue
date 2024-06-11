@@ -42,7 +42,7 @@ function formatMatchTime(matchDateTime: string) {
 <template>
   <div class="max-w-fit">
     <div v-for="date of transformedMatches" class="pb-10 max-w-fit">
-      <div class="flex items-center gap-2 pb-1 max-w-fit">
+      <div class="flex items-center gap-2 mb-1 max-w-fit">
         <UIcon name="i-heroicons-calendar" />
         <div class="font-serif font-thin">
           {{
@@ -57,7 +57,7 @@ function formatMatchTime(matchDateTime: string) {
           <UButton
             color="white"
             variant="ghost"
-            class="ml-0 pl-0 pb-4 max-w-fit dark:hover:bg-transparent"
+            class="ml-0 pl-0 mb-4 max-w-fit dark:hover:bg-transparent"
           >
             <div class="grid grid-row-2">
               <div

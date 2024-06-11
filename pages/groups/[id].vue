@@ -1,17 +1,29 @@
 <script lang="ts" setup>
+import type { Group } from "~/types";
+
+const nuxtApp = useNuxtApp();
+
 definePageMeta({
   middleware: "auth",
 });
+
 const route = useRoute();
-const { data: group } = await useFetch(`/api/groups/${route.params.id}`, {
-  lazy: true,
-});
+
+const { data: group, pending } = await useFetch<Group>(
+  `/api/groups/${route.params.id}`,
+  {
+    getCachedData(key) {
+      return nuxtApp.payload.data[key] || nuxtApp.static.data[key];
+    },
+  }
+);
+
 const routes = [
   { name: "matches", path: "matches" },
   { name: "standings", path: "standings" },
 ];
 
-if (!group.value) navigateTo("/");
+if (!pending.value && !group.value) navigateTo("/");
 if (!isNaN(Number(route.path.at(-1)))) {
   await navigateTo(`${route.path}/matches`);
 }
@@ -19,6 +31,7 @@ if (!isNaN(Number(route.path.at(-1)))) {
 
 <template>
   <div>
+    <h1 class="text-sm font-light">✦ {{ group?.name }} ✦</h1>
     <SubNav
       :routes="routes"
       :active="route.path.includes('matches') ? 'matches' : 'standings'"

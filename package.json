@@ -14,8 +14,8 @@
   },
   "dependencies": {
     "@nuxt/eslint": "^0.3.13",
-    "@nuxthub/core": "^0.6.10",
-    "drizzle-kit": "^0.22.6",
+    "@nuxthub/core": "^0.6.11",
+    "drizzle-kit": "^0.22.7",
     "drizzle-orm": "^0.31.2",
     "nuxt": "^3.11.2"
   },
@@ -25,6 +25,6 @@
     "eslint": "^9.4.0",
     "nuxt-auth-utils": "^0.0.25",
     "vue-tsc": "^2.0.21",
-    "wrangler": "^3.60.0"
+    "wrangler": "^3.60.1"
   }
 }

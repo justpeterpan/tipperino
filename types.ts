@@ -37,3 +37,9 @@ export type Match = {
   };
   timeZoneID: string;
 };
+
+export type Group = {
+  id: number;
+  name: string | null;
+  admin: string | null;
+};

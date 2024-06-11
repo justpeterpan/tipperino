@@ -4,11 +4,34 @@ const { loggedIn } = useUserSession();
 
 <template>
   <main
-    class="grid grid-flow-row sm:grid-flow-col grid-rows-2 sm:grid-rows-none sm:grid-cols-2 justify-items-center items-center h-dvh"
+    class="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8"
   >
-    <div class="size-full grid justify-items-center items-center">image</div>
-    <div class="size-full grid justify-items-center items-center">
-      <UButton v-if="!loggedIn" to="/api/auth/auth0" label="Login" external />
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+      <img
+        class="mx-auto h-72 w-auto grayscale-0 object-cover"
+        src="/rhino.webp"
+        alt="Your Company"
+      />
+      <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <UButton
+          v-if="!loggedIn"
+          to="/api/auth/auth0"
+          label="Login"
+          color="black"
+          size="xl"
+          external
+          block
+        />
+        <UButton
+          v-else
+          to="/dashboard"
+          label="Dashboard"
+          color="black"
+          size="xl"
+          block
+          @click="console.log('clicked')"
+        />
+      </div>
     </div>
   </main>
 </template>

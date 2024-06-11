@@ -1,10 +1,11 @@
 <script setup lang="ts">
+// todo delete component
 const { data: messages, refresh } = await useFetch("/api/messages");
 const newMessage = ref("");
 
 async function sendMessage() {
   if (!newMessage.value.trim()) return;
-  await $fetch("/api/messages", {
+  await useRequestFetch()("/api/messages", {
     method: "POST",
     body: {
       text: newMessage.value,

@@ -17,12 +17,13 @@ export default oauth.auth0EventHandler({
         .returning()
         .get();
     }
-    await setUserSession(event, {
+    await replaceUserSession(event, {
       user: {
         id: user.email,
+        name: registeredUser?.[0]?.name ?? "",
       },
     });
 
-    return sendRedirect(event, "/home");
+    return sendRedirect(event, "/dashboard");
   },
 });
