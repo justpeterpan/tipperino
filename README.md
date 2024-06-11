@@ -8,3 +8,4 @@
 - [ ] show pending invites
 - [ ] implement ranking
 - [ ] fix redirects from / if logged in
+- [ ] provide empty state for dashboard "looks empty here, let's create a group"

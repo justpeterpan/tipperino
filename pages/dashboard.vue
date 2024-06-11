@@ -92,8 +92,8 @@ async function decline(id: number) {
     <UDivider class="w-full py-8" label="✦" />
     <section>
       <div v-if="groups?.length">
-        <h2 class="font-thin mb-2">Member of</h2>
-        <div class="grid grid-cols-2 gap-2 pb-8">
+        <h2 class="text-xl font-thin mb-2">Member of</h2>
+        <div class="grid grid-cols-2 gap-2 pb-2">
           <ULink
             v-for="{ id, name } of groups"
             :key="id"
@@ -112,17 +112,20 @@ async function decline(id: number) {
         </div>
       </div>
 
+      <div v-if="!groups?.length && !invites?.length" class="mb-4 text-balance">
+        Looks a bit empty here. Create a group and invite people to get started!
+      </div>
       <UButton
         label="Create Group"
         @click="isOpen = true"
-        class="w-32 mb-8"
+        class="w-32"
         color="black"
         size="xl"
       />
     </section>
 
     <section v-if="invites?.length">
-      <h2>Invitations to join</h2>
+      <h2 class="text-xl font-thin mb-2">Invitations to join</h2>
       <div class="pb-4">
         <ul v-if="invites?.length">
           <li class="ml-4" v-for="invite of invites" :key="invite.inviteId">
@@ -145,14 +148,28 @@ async function decline(id: number) {
             </div>
           </li>
         </ul>
-        <div v-else>-</div>
       </div>
     </section>
 
     <UDivider class="w-full py-8" label="✦" />
 
     <section v-if="groups?.length" class="pb-8">
-      <h2 class="font-thin mb-2">Invite user</h2>
+      <div class="flex gap-1 relative">
+        <h2 class="text-xl font-thin mb-2">Invite user</h2>
+        <UPopover :popper="{ placement: 'top', offsetDistance: 30 }">
+          <UIcon
+            name="absolute bottom-5 i-heroicons-exclamation-circle"
+            class="text-xl pb-4"
+          />
+          <template #panel>
+            <div class="p-4 text-pretty w-80">
+              No email will be sent. If the user registered with the entered
+              email, they will receive an invitation directly on their
+              dashboard.
+            </div>
+          </template>
+        </UPopover>
+      </div>
       <div class="grid grid-cols-1 w-full gap-2 pb-2">
         <USelectMenu
           v-model="selected"
