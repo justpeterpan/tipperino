@@ -52,3 +52,11 @@ export const predictions = sqliteTable("predictions", {
   team2Score: integer('team2_score').notNull(),
   updatedAt: text('updated_at').notNull().default(sql`CURRENT_TIMESTAMP`),
 })
+
+export const scores = sqliteTable("scores", {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  user: text('user').references(() => users.id).notNull(),
+  group: integer('groups').references(() => groups.id).notNull(),
+  points: integer('points').notNull().default(0),
+  updatedAt: text('updated_at').notNull().default(sql`CURRENT_TIMESTAMP`),
+})
