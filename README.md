@@ -7,5 +7,6 @@
 - [ ] do not create invite in db if user already in group
 - [ ] show pending invites
 - [ ] implement ranking
-- [ ] fix redirects from / if logged in
-- [ ] provide empty state for dashboard "looks empty here, let's create a group"
+- [x] fix redirects from / if logged in
+- [x] provide empty state for dashboard "looks empty here, let's create a group"
+- [ ] lock predictions after game starts

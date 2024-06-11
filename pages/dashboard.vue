@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Group } from "~/types";
+
 definePageMeta({
   middleware: "auth",
 });
@@ -9,7 +11,9 @@ const toast = useToast();
 const isOpen = defineModel("isOpen", { default: false });
 const isLoading = ref(false);
 
-const { data: groups, refresh: refreshGroups } = await useFetch("/api/members");
+const { data: groups, refresh: refreshGroups } = await useFetch<Group[]>(
+  "/api/members"
+);
 const { data: invites, refresh: refreshInvites } = await useFetch(
   "/api/invites"
 );
@@ -125,24 +129,32 @@ async function decline(id: number) {
     </section>
 
     <section v-if="invites?.length">
-      <h2 class="text-xl font-thin mb-2">Invitations to join</h2>
+      <h2 class="text-xl font-thin mb-2 mt-8">
+        Invitations to join following groups
+      </h2>
       <div class="pb-4">
         <ul v-if="invites?.length">
-          <li class="ml-4" v-for="invite of invites" :key="invite.inviteId">
+          <li
+            class="ml-2"
+            v-for="(invite, index) of invites"
+            :key="invite.inviteId"
+          >
             <div class="flex w-64 items-center gap-2">
+              <UIcon name="i-heroicons-envelope-open" class="text-xl" />
               <div class="w-32">
                 {{ invite.status === 0 ? invite.name : "-" }}
               </div>
               <UButton
                 icon="i-heroicons-check"
                 class="max-w-fit"
-                color="black"
+                color="emerald"
                 @click="accept(invite.inviteId, invite.groupId)"
               />
               <UButton
                 icon="i-heroicons-x-mark"
                 class="max-w-fit"
-                color="black"
+                color="rose"
+                variant="outline"
                 @click="decline(invite.inviteId)"
               />
             </div>

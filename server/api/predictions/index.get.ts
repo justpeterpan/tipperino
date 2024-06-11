@@ -1,6 +1,6 @@
 export default eventHandler(async (event) => {
   const { user } = await requireUserSession(event);
-  const { group } = await getQuery(event);
+  const { group } = getQuery(event);
 
   const predictions = await useDB()
     .select()

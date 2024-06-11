@@ -2,10 +2,26 @@
 definePageMeta({
   middleware: "auth",
 });
+
+const route = useRoute();
+
+const { data } = await useFetch("/api/predictions/standings", {
+  method: "GET",
+  params: { group: route.params.id as string },
+});
 </script>
 
 <template>
   <div>
-    <h1 class="text-xl/6 font-thin font-serif italic pb-10">✦ soon ✦</h1>
+    <div>
+      <ul class="w-32">
+        <li v-for="d of data" :key="d" class="flex justify-between">
+          <div>
+            {{ d }}
+          </div>
+          <div>0</div>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>

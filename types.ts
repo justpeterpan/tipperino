@@ -41,5 +41,5 @@ export type Match = {
 export type Group = {
   id: number;
   name: string | null;
-  admin: string | null;
+  role?: string;
 };
