@@ -96,7 +96,10 @@ async function decline(id: number) {
     <section>
       <div v-if="groups?.length">
         <h2 class="text-xl font-thin mb-2">Member of</h2>
-        <div class="grid grid-cols-2 gap-2 pb-2">
+        <div
+          class="grid gap-2 pb-2"
+          :class="groups.length === 1 ? 'grid-cols-1' : 'grid-cols-2'"
+        >
           <ULink
             v-for="{ id, name } of groups"
             :key="id"
