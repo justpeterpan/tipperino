@@ -104,9 +104,8 @@ function formatMatchTime(matchDateTime: string) {
             </div>
           </UButton>
         </template>
-        <template #details="{ item }">
+        <template #details="{ item }: { item: Match }">
           <MatchDetails
-            :is-finished="item.matchIsFinished"
             :details="item"
             :group-id="route.params.id as string"
             :predictions="predictions"

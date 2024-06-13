@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { Match } from "../types";
+import type { NotificationColor } from "#ui/types";
 
 const props = defineProps<{
   details: Match;
   groupId: string;
-  isFinished: boolean;
   predictions:
     | {
         id: number;
@@ -22,6 +22,8 @@ const props = defineProps<{
     | null;
 }>();
 
+const toast = useToast();
+
 const team1Score = defineModel("team1Score", { type: Number, default: 0 });
 const team2Score = defineModel("team2Score", { type: Number, default: 0 });
 
@@ -30,25 +32,32 @@ team2Score.value = predicted(props.details.matchID)?.team2Score || 0;
 
 const emit = defineEmits(["saved"]);
 const isEditing = ref(false);
+const hasStarted = computed(() => {
+  return new Date(props.details.matchDateTimeUTC).getTime() < Date.now();
+});
 
 function handleEdit() {
   isEditing.value = !isEditing.value;
 }
 
 async function save() {
-  await useRequestFetch()("/api/predictions", {
-    method: isEditing.value ? "PATCH" : "POST",
-    body: {
-      team1Score: team1Score.value,
-      team1Name: props.details.team1.teamName,
-      team1Id: props.details.team1.teamId,
-      team2Score: team2Score.value,
-      team2Name: props.details.team2.teamName,
-      team2Id: props.details.team2.teamId,
-      match: props.details.matchID,
-      group: +props.groupId,
-    },
-  });
+  const res = await $fetch<{ message: string; color: NotificationColor }>(
+    "/api/predictions",
+    {
+      method: isEditing.value ? "PATCH" : "POST",
+      body: {
+        team1Score: team1Score.value,
+        team1Name: props.details.team1.teamName,
+        team1Id: props.details.team1.teamId,
+        team2Score: team2Score.value,
+        team2Name: props.details.team2.teamName,
+        team2Id: props.details.team2.teamId,
+        match: props.details.matchID,
+        group: +props.groupId,
+      },
+    }
+  );
+  toast.add({ title: res.message, color: res.color });
   isEditing.value = false;
   emit("saved");
 }
@@ -66,7 +75,8 @@ function cancelEdit() {
 <template>
   <div class="text-base font-serif">
     <h2 class="flex items-center italic max-w-fit">
-      <UIcon name="i-heroicons-map-pin" /> {{ details.location.locationCity }},
+      <UIcon name="i-heroicons-map-pin" />{{ hasStarted }}
+      {{ details.location.locationCity }},
       {{ details.location.locationStadium }}
     </h2>
     <div class="flex gap-2 items-center pt-2 max-w-fit">
@@ -76,7 +86,7 @@ function cancelEdit() {
         type="number"
         class="w-8"
         size="xs"
-        :disabled="isFinished || (!isEditing && !!predicted(details.matchID))"
+        :disabled="hasStarted || (!isEditing && !!predicted(details.matchID))"
       />
       <div>:</div>
       <UInput
@@ -84,11 +94,11 @@ function cancelEdit() {
         type="number"
         class="w-8"
         size="xs"
-        :disabled="isFinished || (!isEditing && !!predicted(details.matchID))"
+        :disabled="hasStarted || (!isEditing && !!predicted(details.matchID))"
       />
       <div class="text-black dark:text-white">{{ details.team2.teamName }}</div>
       <UButton
-        v-if="!isFinished && (isEditing || !predicted(details.matchID))"
+        v-if="!hasStarted && (isEditing || !predicted(details.matchID))"
         icon="i-heroicons-check"
         class="ml-2"
         color="black"
@@ -97,7 +107,7 @@ function cancelEdit() {
         @click="save"
       />
       <UButton
-        v-else-if="!isFinished"
+        v-else-if="!hasStarted"
         icon="i-heroicons-pencil"
         class="ml-2"
         square

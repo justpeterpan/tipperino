@@ -1,3 +1,5 @@
+import { Match } from "~/types";
+
 export default eventHandler(async (event) => {
   const { user } = await requireUserSession(event);
   const {
@@ -10,8 +12,13 @@ export default eventHandler(async (event) => {
     team2Name,
     team2Score,
   } = await readBody(event);
+  const matchFromApi = await $fetch<Match>(`/api/matches/${match}`);
 
-  const res = await useDB()
+  if (new Date(matchFromApi.matchDateTimeUTC).getTime() < Date.now()) {
+    return { message: "Match has already started", color: "red" };
+  }
+
+  await useDB()
     .insert(tables.predictions)
     .values({
       match,
@@ -26,5 +33,5 @@ export default eventHandler(async (event) => {
     })
     .returning()
     .get();
-  return res;
+  return { message: "Match prediction saved successfully" };
 });

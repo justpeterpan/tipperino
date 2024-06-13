@@ -1,8 +1,16 @@
+import { Match } from "~/types";
+
 export default eventHandler(async (event) => {
   const { user } = await requireUserSession(event);
-  const { group, team1Score, team2Score } = await readBody(event);
+  const { match, group, team1Score, team2Score } = await readBody(event);
 
-  const res = await useDB()
+  const matchFromApi = await $fetch<Match>(`/api/matches/${match}`);
+
+  if (new Date(matchFromApi.matchDateTimeUTC).getTime() < Date.now()) {
+    return { message: "Match has already started", color: "red" };
+  }
+
+  await useDB()
     .update(tables.predictions)
     .set({ team1Score, team2Score })
     .where(
@@ -12,5 +20,5 @@ export default eventHandler(async (event) => {
       )
     );
 
-  return res;
+  return { message: "Match prediction updated successfully" };
 });
