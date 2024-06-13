@@ -65,7 +65,7 @@ async function saveUsername() {
     <nav class="h-16 w-full flex items-center">
       <ul class="w-full flex flex-row-reverse justify-between px-4">
         <li v-if="loggedIn">
-          <UserMenu :menu-items="mergedMenuItems" />
+          <UserMenu :menu-items="mergedMenuItems" @clicked="refreshMembers" />
         </li>
       </ul>
     </nav>
