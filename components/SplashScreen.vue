@@ -29,7 +29,6 @@ const { loggedIn } = useUserSession();
           color="black"
           size="xl"
           block
-          @click="console.log('clicked')"
         />
       </div>
     </div>

@@ -1,5 +1,6 @@
 export default defineEventHandler(async (event) => {
   const session = await requireUserSession(event);
+  console.log(new Date());
   const groups = await useDB()
     .select({
       id: tables.members.group,
