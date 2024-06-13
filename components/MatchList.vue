@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Match } from "~/types";
+import { ResultType, type Match } from "../types";
 
 const route = useRoute();
 
@@ -53,7 +53,7 @@ function formatMatchTime(matchDateTime: string) {
         </div>
       </div>
       <UAccordion :items="date.matches" multiple>
-        <template #default="{ item }">
+        <template #default="{ item }: { item: Match }">
           <UButton
             color="white"
             variant="ghost"
@@ -61,7 +61,7 @@ function formatMatchTime(matchDateTime: string) {
           >
             <div class="grid grid-row-2">
               <div
-                class="text-sm flex gap-3 font-serif italic font-thin items-center place-self-start"
+                class="text-sm flex gap-3 font-serif italic font-thin place-self-start"
               >
                 <div class="items-center flex gap-1">
                   <UIcon name="i-heroicons-clock" />
@@ -84,12 +84,29 @@ function formatMatchTime(matchDateTime: string) {
                 <div class="team2">
                   {{ item.team2.teamName }}
                 </div>
+                <div
+                  v-if="item.matchIsFinished"
+                  class="text-xs font-serif font-thin"
+                >
+                  ({{
+                    item.matchResults.find(
+                      (result) => result.resultTypeID === ResultType.Finished
+                    )?.pointsTeam1
+                  }}
+                  :
+                  {{
+                    item.matchResults.find(
+                      (result) => result.resultTypeID === ResultType.Finished
+                    )?.pointsTeam2
+                  }})
+                </div>
               </div>
             </div>
           </UButton>
         </template>
         <template #details="{ item }">
           <MatchDetails
+            :is-finished="item.matchIsFinished"
             :details="item"
             :group-id="route.params.id as string"
             :predictions="predictions"

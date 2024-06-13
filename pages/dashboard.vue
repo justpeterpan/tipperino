@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Group } from "~/types";
+import type { Group } from "../types";
 
 definePageMeta({
   middleware: "auth",

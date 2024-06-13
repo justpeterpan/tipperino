@@ -82,10 +82,13 @@ async function saveUsername() {
       }"
     >
       <UCard>
-        <template #header>
-          Before continuing you have to set a unique username
+        <template #header
+          ><h2 class="text-lg font-semibold">Username</h2>
         </template>
         <div>
+          <div class="text-wrap">
+            Before continuing you have to set a unique username.
+          </div>
           <div class="flex flex-col gap-4 p-4">
             <UInput v-model="username" placeholder="enter username" size="xl" />
             <UButton

@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import type { Match } from "~/types";
+import type { Match } from "../types";
 
 const props = defineProps<{
   details: Match;
   groupId: string;
+  isFinished: boolean;
   predictions:
     | {
         id: number;
@@ -75,7 +76,7 @@ function cancelEdit() {
         type="number"
         class="w-8"
         size="xs"
-        :disabled="!isEditing && !!predicted(details.matchID)"
+        :disabled="isFinished || (!isEditing && !!predicted(details.matchID))"
       />
       <div>:</div>
       <UInput
@@ -83,11 +84,11 @@ function cancelEdit() {
         type="number"
         class="w-8"
         size="xs"
-        :disabled="!isEditing && !!predicted(details.matchID)"
+        :disabled="isFinished || (!isEditing && !!predicted(details.matchID))"
       />
       <div class="text-black dark:text-white">{{ details.team2.teamName }}</div>
       <UButton
-        v-if="isEditing || !predicted(details.matchID)"
+        v-if="!isFinished && (isEditing || !predicted(details.matchID))"
         icon="i-heroicons-check"
         class="ml-2"
         color="black"
@@ -96,7 +97,7 @@ function cancelEdit() {
         @click="save"
       />
       <UButton
-        v-else
+        v-else-if="!isFinished"
         icon="i-heroicons-pencil"
         class="ml-2"
         square

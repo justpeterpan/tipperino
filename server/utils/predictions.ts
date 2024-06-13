@@ -45,7 +45,10 @@ const isWinnerCorrect = (prediction: MatchResult, actual: MatchResult) => {
   return predictionWinner === actualWinner;
 };
 
-export function calculateScore(prediction: MatchResult, actual: MatchResult) {
+export function calculateScore(
+  prediction: MatchResult,
+  actual: MatchResult
+): number {
   if (isExact(prediction, actual)) {
     return 3;
   }

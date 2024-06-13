@@ -1,0 +1,1 @@
+ALTER TABLE `predictions` ADD `finished` integer DEFAULT 0 NOT NULL;

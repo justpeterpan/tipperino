@@ -51,6 +51,7 @@ export const predictions = sqliteTable("predictions", {
   team2Name: text('team2_name').notNull(),
   team2Score: integer('team2_score').notNull(),
   updatedAt: text('updated_at').notNull().default(sql`CURRENT_TIMESTAMP`),
+  finished: integer('finished').notNull().default(0),
 })
 
 export const scores = sqliteTable("scores", {

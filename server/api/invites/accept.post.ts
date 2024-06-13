@@ -1,4 +1,4 @@
-import { InviteStatus } from "./status";
+import { InviteStatus } from "~/types";
 
 export default defineEventHandler(async (event) => {
   const { id, group } = await readBody(event);
