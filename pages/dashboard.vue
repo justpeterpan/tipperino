@@ -51,7 +51,7 @@ async function create() {
 const selected = ref(adminGroups.value?.[0]);
 const inviteName = defineModel("inviteName", { default: "" });
 async function invite() {
-  const res = await useRequestFetch()("/api/invites", {
+  const res = await $fetch<{ message: string }>("/api/invites", {
     method: "POST",
     body: {
       group: selected.value?.id,
@@ -60,7 +60,7 @@ async function invite() {
     },
   });
   toast.add({
-    title: `Invitation sent to ${res?.id}`,
+    title: res.message,
   });
   inviteName.value = "";
 }
