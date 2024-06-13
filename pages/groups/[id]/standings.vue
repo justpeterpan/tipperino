@@ -13,15 +13,16 @@ const { data } = await useFetch("/api/predictions/standings", {
 
 <template>
   <div>
-    <div>
-      <ul class="w-32">
+    <div class="italic font-serif text-4xl">
+      ✦ soon ✦
+      <!-- <ul class="w-32">
         <li v-for="d of data" :key="d" class="flex justify-between">
           <div>
             {{ d }}
           </div>
           <div>0</div>
         </li>
-      </ul>
+      </ul> -->
     </div>
   </div>
 </template>

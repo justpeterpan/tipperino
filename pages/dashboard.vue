@@ -81,8 +81,6 @@ async function decline(id: number) {
     body: { id },
   });
   await refreshInvites();
-  // todo check if refresh is neccessary
-  await refreshGroups();
 }
 </script>
 
