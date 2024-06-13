@@ -63,6 +63,7 @@ async function invite() {
     title: res.message,
   });
   inviteName.value = "";
+  await refreshInvites();
 }
 
 async function accept(id: number, group: number) {
@@ -116,7 +117,10 @@ async function decline(id: number) {
         </div>
       </div>
 
-      <div v-if="!groups?.length && !invites?.length" class="mb-4 text-balance">
+      <div
+        v-if="!groups?.length && !invites?.invites.length"
+        class="mb-4 text-balance"
+      >
         Looks a bit empty here. Create a group and invite people to get started!
       </div>
       <UButton
@@ -128,21 +132,21 @@ async function decline(id: number) {
       />
     </section>
 
-    <section v-if="invites?.length">
+    <section v-if="invites?.invites.length">
       <h2 class="text-xl font-thin mb-2 mt-8">
-        Invitations to join following groups
+        Invitations to join these groups
       </h2>
       <div class="pb-4">
-        <ul v-if="invites?.length">
+        <ul v-if="invites?.invites.length">
           <li
             class="ml-2"
-            v-for="(invite, index) of invites"
+            v-for="invite of invites.invites"
             :key="invite.inviteId"
           >
             <div class="flex w-64 items-center gap-2">
-              <UIcon name="i-heroicons-envelope-open" class="text-xl" />
+              <UIcon name="i-heroicons-user-group-20-solid" class="text-xl" />
               <div class="w-32">
-                {{ invite.status === 0 ? invite.name : "-" }}
+                {{ invite.name }}
               </div>
               <UButton
                 icon="i-heroicons-check"
@@ -157,6 +161,24 @@ async function decline(id: number) {
                 variant="outline"
                 @click="decline(invite.inviteId)"
               />
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section v-if="invites?.pendingInvites.length">
+      <h2 class="text-xl font-thin mb-2 mt-8">Pending invitations you sent</h2>
+      <div class="pb-4">
+        <ul v-if="invites?.pendingInvites.length">
+          <li
+            class="ml-2"
+            v-for="invite of invites.pendingInvites"
+            :key="invite.id"
+          >
+            <div class="flex w-64 items-center gap-2">
+              <UIcon name="i-heroicons-envelope-open" class="text-xl" />
+              <div class="w-32">{{ invite.user }}</div>
             </div>
           </li>
         </ul>

@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import { InviteStatus } from "~/types";
 export default defineEventHandler(async (event) => {
   const session = await requireUserSession(event);
   const invites = await useDB()
@@ -10,6 +11,21 @@ export default defineEventHandler(async (event) => {
     })
     .from(tables.invites)
     .innerJoin(tables.groups, eq(tables.invites.group, tables.groups.id))
-    .where(eq(tables.invites.user, session.user.id));
-  return invites.filter((invite) => invite.status === 0);
+    .where(
+      and(
+        eq(tables.invites.user, session.user.id),
+        eq(tables.invites.status, InviteStatus.Pending)
+      )
+    );
+  const pendingInvites = await useDB()
+    .select()
+    .from(tables.invites)
+    .where(
+      and(
+        eq(tables.invites.by, session.user.id),
+        eq(tables.invites.status, InviteStatus.Pending)
+      )
+    );
+
+  return { invites, pendingInvites };
 });

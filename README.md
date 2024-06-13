@@ -4,8 +4,8 @@
 
 - [ ] persist groups in local storage
 - [ ] consolidate calls against groups & members
-- [ ] do not create invite in db if user already in group
-- [ ] show pending invites
+- [x] do not create invite in db if user already in group
+- [x] show pending invites
 - [ ] implement ranking
   - [x] komplett falsch getippt = 0 punkte
   - [x] tendenz richtig = 1 punkte
