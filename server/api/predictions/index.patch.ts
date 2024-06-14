@@ -16,7 +16,8 @@ export default eventHandler(async (event) => {
     .where(
       and(
         eq(tables.predictions.user, user.id),
-        eq(tables.predictions.group, Number(group))
+        eq(tables.predictions.group, Number(group)),
+        eq(tables.predictions.match, Number(match))
       )
     );
 

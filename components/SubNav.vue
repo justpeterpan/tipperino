@@ -1,7 +1,7 @@
 <script setup lang="ts">
 defineProps<{
   routes: { path: string; name: string }[];
-  active: "matches" | "standings";
+  active: "matches" | "standings" | "questions" | undefined;
 }>();
 </script>
 

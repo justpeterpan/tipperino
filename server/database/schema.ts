@@ -61,3 +61,18 @@ export const scores = sqliteTable("scores", {
   points: integer('points').notNull().default(0),
   updatedAt: text('updated_at').notNull().default(sql`CURRENT_TIMESTAMP`),
 })
+
+export const questions = sqliteTable("questions", {
+  id: integer('id').primaryKey({autoIncrement: true}),
+  question: text('question').notNull().default(''),
+  answer: text('answer').notNull().default(''),
+})
+
+export const answers = sqliteTable("answers", {
+  id: integer('id').primaryKey({autoIncrement: true}),
+  question: integer('question').references(() => questions.id),
+  user: text('user').references(() => users.id),
+  group: integer('group').references(() => groups.id),
+  answer: text('answer').notNull().default(''),
+  updatedAt: text('updated_at').notNull().default(sql`CURRENT_TIMESTAMP`),
+})
