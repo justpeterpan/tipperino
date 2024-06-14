@@ -150,6 +150,7 @@ const doNotShowInput = computed(() => {
         icon="i-heroicons-pencil"
         size="xl"
         square
+        class="text-white dark:text-white"
         @click="handleEdit"
       />
       <UButton

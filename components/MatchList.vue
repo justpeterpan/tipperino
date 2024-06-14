@@ -17,6 +17,10 @@ const { data: predictions, refresh: refreshPredictions } = await useFetch(
   }
 );
 
+function predicted(match: number) {
+  return predictions.value?.find((prediction) => prediction.match === match);
+}
+
 const transformedMatches = computed(() => {
   return props.matchesPerDate.map((date) => {
     return {
@@ -99,6 +103,9 @@ function formatMatchTime(matchDateTime: string) {
                       (result) => result.resultTypeID === ResultType.Finished
                     )?.pointsTeam2
                   }})
+                </div>
+                <div v-else-if="predicted(item.matchID)">
+                  <UIcon name="i-heroicons-check" class="text-2xl" />
                 </div>
               </div>
             </div>
