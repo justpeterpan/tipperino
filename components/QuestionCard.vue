@@ -39,10 +39,10 @@ function cancelEdit() {
 }
 
 async function saveAnswer() {
-  if (selectedPlayer.value?.name) {
+  if ("name" in selectedPlayer.value && selectedPlayer.value?.name) {
     answer.value = selectedPlayer.value.name;
   }
-  if (selectedTeam.value) {
+  if (typeof selectedTeam.value === "string" && selectedTeam.value) {
     answer.value = selectedTeam.value;
   }
 
@@ -66,13 +66,13 @@ async function saveAnswer() {
 const selectedPlayer = ref(
   props.a?.answer
     ? props.players.filter((player) => player.name === props.a?.answer)[0]
-    : props.players[0]
+    : []
 );
 
 const selectedTeam = ref(
   props.a?.answer
     ? props.teams.filter((team) => team === props.a?.answer)[0]
-    : props.teams[0]
+    : []
 );
 
 const doNotShowInput = computed(() => {
