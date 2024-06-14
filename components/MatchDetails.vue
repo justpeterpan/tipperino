@@ -75,7 +75,7 @@ function cancelEdit() {
 <template>
   <div class="text-base font-serif">
     <h2 class="flex items-center italic max-w-fit">
-      <UIcon name="i-heroicons-map-pin" />{{ hasStarted }}
+      <UIcon name="i-heroicons-map-pin" />
       {{ details.location.locationCity }},
       {{ details.location.locationStadium }}
     </h2>
