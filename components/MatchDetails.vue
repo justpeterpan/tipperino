@@ -23,6 +23,7 @@ const props = defineProps<{
 }>();
 
 const toast = useToast();
+const isLoading = ref(false);
 
 const team1Score = defineModel("team1Score", { type: Number, default: 0 });
 const team2Score = defineModel("team2Score", { type: Number, default: 0 });
@@ -41,6 +42,7 @@ function handleEdit() {
 }
 
 async function save() {
+  isLoading.value = true;
   const res = await $fetch<{ message: string; color: NotificationColor }>(
     "/api/predictions",
     {
@@ -60,6 +62,10 @@ async function save() {
   toast.add({ title: res.message, color: res.color });
   isEditing.value = false;
   emit("saved");
+  // timout to prevent flashing of switch from save to edit button
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 5000);
 }
 
 function predicted(match: number) {
@@ -103,6 +109,7 @@ function cancelEdit() {
         class="ml-2"
         color="black"
         square
+        :loading="isLoading"
         size="2xs"
         @click="save"
       />
