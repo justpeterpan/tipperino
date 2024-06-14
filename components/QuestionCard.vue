@@ -131,11 +131,7 @@ const doNotShowInput = computed(() => {
         class="w-full"
         v-model="selectedTeam"
         :options="teams"
-        searchable
         :disabled="hasStarted || (!isEditing && !!props.a?.answer)"
-        :popper="{
-          placement: questionId === 7 || questionId === 5 ? 'top' : 'bottom',
-        }"
       >
         <template #option="{ option: team }">
           <span class="truncate">{{ team }}</span>
