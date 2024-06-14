@@ -39,7 +39,11 @@ function cancelEdit() {
 }
 
 async function saveAnswer() {
-  if ("name" in selectedPlayer.value && selectedPlayer.value?.name) {
+  if (
+    selectedPlayer.value &&
+    "name" in selectedPlayer.value &&
+    selectedPlayer.value?.name
+  ) {
     answer.value = selectedPlayer.value.name;
   }
   if (typeof selectedTeam.value === "string" && selectedTeam.value) {
