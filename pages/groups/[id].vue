@@ -9,13 +9,8 @@ definePageMeta({
 
 const route = useRoute();
 
-const { data: group, pending } = await useFetch<Group>(
-  `/api/groups/${route.params.id}`,
-  {
-    getCachedData(key) {
-      return nuxtApp.payload.data[key] || nuxtApp.static.data[key];
-    },
-  }
+const { data: group, status } = await useFetch<Group>(
+  `/api/groups/${route.params.id}`
 );
 
 const routes = [
@@ -30,7 +25,7 @@ const activeRoute = computed(() => {
   if (route.path.includes("questions")) return "questions";
 });
 
-if (!pending.value && !group.value) navigateTo("/");
+if (status.value !== "pending" && !group.value) navigateTo("/");
 if (!isNaN(Number(route.path.at(-1)))) {
   await navigateTo(`${route.path}/matches`);
 }

@@ -7,11 +7,7 @@ definePageMeta({
   middleware: "auth",
 });
 
-const { data: matches } = await useFetch<Match[]>("/api/matches", {
-  getCachedData(key) {
-    return nuxtApp.payload.data[key] || nuxtApp.static.data[key];
-  },
-});
+const { data: matches } = await useFetch<Match[]>("/api/matches");
 
 const matchDates = new Set(
   matches.value
