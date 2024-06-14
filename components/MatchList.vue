@@ -90,7 +90,7 @@ function formatMatchTime(matchDateTime: string) {
                 </div>
                 <div
                   v-if="item.matchIsFinished"
-                  class="text-xs font-serif font-thin"
+                  class="text-xs sm:text-lg font-serif font-thin"
                 >
                   ({{
                     item.matchResults.find(
