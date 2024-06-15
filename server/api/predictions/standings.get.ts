@@ -44,21 +44,3 @@ export default eventHandler(async (event) => {
     predictions: uniquePredictions,
   };
 });
-
-function processScores(
-  scores: {
-    userId: string;
-    userName: string;
-    points: number;
-    group: number;
-    rank?: number;
-  }[]
-) {
-  const p = scores.toSorted((a, b) => b.points - a.points);
-
-  p.forEach((score, index) => {
-    score.rank = index + 1;
-  });
-
-  return p;
-}

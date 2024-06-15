@@ -14,9 +14,6 @@ export default eventHandler(async (event) => {
   } = await readBody(event);
   const matchFromApi = await $fetch<Match>(`/api/matches/${match}`);
 
-  console.log("match time", new Date(matchFromApi.matchDateTimeUTC).getTime());
-  console.log("now time", Date.now());
-
   if (new Date(matchFromApi.matchDateTimeUTC).getTime() < Date.now()) {
     return { message: "Match has already started", color: "red" };
   }

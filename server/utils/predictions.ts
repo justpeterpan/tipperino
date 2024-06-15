@@ -32,18 +32,22 @@ const isWinnerCorrect = (prediction: MatchResult, actual: MatchResult) => {
     return false;
   }
 
-  const predictionWinner =
-    prediction.team1Score > prediction.team2Score
-      ? "team1"
-      : prediction.team1Score < prediction.team2Score
-      ? "team2"
-      : "draw";
-  const actualWinner =
-    actual.team1Score > actual.team2Score
-      ? "team1"
-      : actual.team1Score < actual.team2Score
-      ? "team2"
-      : "draw";
+  let predictionWinner;
+  if (prediction.team1Score > prediction.team2Score) {
+    predictionWinner = "team1";
+  } else if (prediction.team1Score < prediction.team2Score) {
+    predictionWinner = "team2";
+  } else {
+    predictionWinner = "draw";
+  }
+  let actualWinner;
+  if (actual.team1Score > actual.team2Score) {
+    actualWinner = "team1";
+  } else if (actual.team1Score < actual.team2Score) {
+    actualWinner = "team2";
+  } else {
+    actualWinner = "draw";
+  }
 
   return predictionWinner === actualWinner;
 };

@@ -1,6 +1,6 @@
 import { ResultType, type Match } from "~/types";
 
-type MatchFromApi = {
+type MatchFromDB = {
   date: string;
   id: number;
   dateUTC: string;
@@ -20,7 +20,7 @@ export default eventHandler(async () => {
     .all();
   const scores = await useDB().select().from(tables.scores).all();
 
-  const processBatch = async (batch: MatchFromApi) => {
+  const processBatch = async (batch: MatchFromDB) => {
     await Promise.all(
       batch.map(async (match) => {
         const matchPredictions = predictions.filter(
