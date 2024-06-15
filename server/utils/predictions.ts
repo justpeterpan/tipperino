@@ -21,26 +21,29 @@ const isGoalDifferenceCorrect = (
   prediction: MatchResult,
   actual: MatchResult
 ) => {
-  const predictionDifference = Math.abs(
-    prediction.team1Score - prediction.team2Score
-  );
-  const actualDifference = Math.abs(actual.team1Score - actual.team2Score);
+  const predictionDifference = prediction.team1Score - prediction.team2Score;
+  const actualDifference = actual.team1Score - actual.team2Score;
 
   return predictionDifference === actualDifference;
 };
 
 const isWinnerCorrect = (prediction: MatchResult, actual: MatchResult) => {
-  if (
-    (isWrong(prediction, actual) && isExact(prediction, actual)) ||
-    isExact(prediction, actual)
-  ) {
+  if (isExact(prediction, actual)) {
     return false;
   }
 
   const predictionWinner =
-    prediction.team1Score > prediction.team2Score ? "team1" : "team2";
+    prediction.team1Score > prediction.team2Score
+      ? "team1"
+      : prediction.team1Score < prediction.team2Score
+      ? "team2"
+      : "draw";
   const actualWinner =
-    actual.team1Score > actual.team2Score ? "team1" : "team2";
+    actual.team1Score > actual.team2Score
+      ? "team1"
+      : actual.team1Score < actual.team2Score
+      ? "team2"
+      : "draw";
 
   return predictionWinner === actualWinner;
 };
