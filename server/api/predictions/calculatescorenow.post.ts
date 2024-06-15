@@ -1,6 +1,6 @@
 import { ResultType, type Match } from "~/types";
 
-export default eventHandler(async (event) => {
+export default eventHandler(async () => {
   const predictions = await useDB().select().from(tables.predictions).all();
   const matches = await useDB()
     .select()
