@@ -18,9 +18,9 @@ export default eventHandler(async () => {
 
   const batchSize = 10;
 
-  for (let i = 0; i < matchesForDB.length; i += batchSize) {
-    const batch = matchesForDB.slice(i, i + batchSize);
-    await useDB().insert(matches).values(batch);
-  }
+  // for (let i = 0; i < matchesForDB.length; i += batchSize) {
+  //   const batch = matchesForDB.slice(i, i + batchSize);
+  //   await useDB().insert(matches).values(batch);
+  // }
   return matchesFromApi;
 });
