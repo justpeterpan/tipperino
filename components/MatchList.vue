@@ -48,7 +48,7 @@ function formatMatchTime(matchDateTime: string) {
     <div v-for="date of transformedMatches" class="pb-10 max-w-fit">
       <div class="flex items-center gap-2 mb-1 max-w-fit">
         <UIcon name="i-heroicons-calendar" />
-        <div class="font-serif font-thin">
+        <div class="font-serif font-thin text-lg">
           {{
             new Date(date.date).toLocaleDateString("de-DE", {
               dateStyle: "full",
@@ -61,21 +61,9 @@ function formatMatchTime(matchDateTime: string) {
           <UButton
             color="white"
             variant="ghost"
-            class="ml-0 pl-0 mb-4 max-w-fit dark:hover:bg-transparent"
+            class="ml-0 pl-0 max-w-fit dark:hover:bg-transparent"
           >
             <div class="grid grid-row-2">
-              <div
-                class="text-sm flex gap-3 font-serif italic font-thin place-self-start"
-              >
-                <div class="items-center flex gap-1">
-                  <UIcon name="i-heroicons-clock" />
-                  {{ formatMatchTime(item.matchDateTime) }}
-                </div>
-                <div class="flex items-center gap-1">
-                  <UIcon name="i-heroicons-user-group-20-solid" />
-                  {{ item.group.groupName }}
-                </div>
-              </div>
               <div
                 class="flex flex-row gap-2 items-center font-black uppercase text-xl sm:text-4xl tracking-[-0.06em]"
               >
@@ -106,6 +94,18 @@ function formatMatchTime(matchDateTime: string) {
                 </div>
                 <div v-else-if="predicted(item.matchID)">
                   <UIcon name="i-heroicons-check" class="text-2xl" />
+                </div>
+              </div>
+              <div
+                class="text-base text-neutral-500 flex gap-3 font-serif italic font-thin place-self-start"
+              >
+                <div class="items-center flex gap-1 text-neutral-500">
+                  <UIcon name="i-heroicons-clock" />
+                  {{ formatMatchTime(item.matchDateTime) }}
+                </div>
+                <div class="flex items-center gap-1">
+                  <UIcon name="i-heroicons-user-group-20-solid" />
+                  {{ item.group.groupName }}
                 </div>
               </div>
             </div>

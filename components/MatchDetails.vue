@@ -80,29 +80,27 @@ function cancelEdit() {
 </script>
 <template>
   <div class="text-base font-serif">
-    <h2 class="flex items-center italic max-w-fit">
+    <h2 class="flex items-center italic max-w-fit text-neutral-500">
       <UIcon name="i-heroicons-map-pin" />
       {{ details.location.locationCity }},
       {{ details.location.locationStadium }}
     </h2>
-    <div class="flex gap-2 items-center pt-2 max-w-fit">
-      <div class="text-black dark:text-white">{{ details.team1.teamName }}</div>
+    <div class="flex gap-2 items-center pt-4 max-w-fit">
       <UInput
         v-model="team1Score"
         type="number"
-        class="w-8"
-        size="xs"
+        class="w-10"
+        size="lg"
         :disabled="hasStarted || (!isEditing && !!predicted(details.matchID))"
       />
       <div>:</div>
       <UInput
         v-model="team2Score"
         type="number"
-        class="w-8"
-        size="xs"
+        class="w-10"
+        size="lg"
         :disabled="hasStarted || (!isEditing && !!predicted(details.matchID))"
       />
-      <div class="text-black dark:text-white">{{ details.team2.teamName }}</div>
       <UButton
         v-if="!hasStarted && (isEditing || !predicted(details.matchID))"
         icon="i-heroicons-check"
@@ -110,7 +108,7 @@ function cancelEdit() {
         color="black"
         square
         :loading="isLoading"
-        size="2xs"
+        size="xs"
         @click="save"
       />
       <UButton
@@ -118,7 +116,7 @@ function cancelEdit() {
         icon="i-heroicons-pencil"
         class="ml-2"
         square
-        size="2xs"
+        size="xs"
         @click="handleEdit"
       />
       <UButton
