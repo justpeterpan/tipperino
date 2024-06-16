@@ -42,30 +42,12 @@ function formatMatchTime(matchDateTime: string) {
   });
 }
 
-// todo fix!
-function pTeam1(match: Match) {
+function pointsOfTeam(match: Match, team: string) {
   const r = match.matchResults.find(
     (result) => result.resultTypeID === ResultType.Finished
   );
 
-  if (r === undefined) {
-    window.document.location.reload();
-  } else {
-    return r.pointsTeam1;
-  }
-}
-
-// todo fix!
-function pTeam2(match: Match) {
-  const r = match.matchResults.find(
-    (result) => result.resultTypeID === ResultType.Finished
-  );
-
-  if (r === undefined) {
-    window.document.location.reload();
-  } else {
-    return r.pointsTeam2;
-  }
+  return team === "team1" ? r?.pointsTeam1 : r?.pointsTeam2;
 }
 </script>
 
@@ -106,9 +88,9 @@ function pTeam2(match: Match) {
                   v-if="item.matchIsFinished"
                   class="text-xs sm:text-lg font-serif font-thin"
                 >
-                  ({{ pTeam1(item) }}
+                  ({{ pointsOfTeam(item, "team1") }}
                   :
-                  {{ pTeam2(item) }})
+                  {{ pointsOfTeam(item, "team2") }})
                 </div>
                 <div v-else-if="predicted(item.matchID)">
                   <UIcon name="i-heroicons-check" class="text-2xl" />
