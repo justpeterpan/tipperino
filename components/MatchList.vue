@@ -41,6 +41,32 @@ function formatMatchTime(matchDateTime: string) {
     hour: "numeric",
   });
 }
+
+// todo fix!
+function pTeam1(match: Match) {
+  const r = match.matchResults.find(
+    (result) => result.resultTypeID === ResultType.Finished
+  );
+
+  if (r === undefined) {
+    window.document.location.reload();
+  } else {
+    return r.pointsTeam1;
+  }
+}
+
+// todo fix!
+function pTeam2(match: Match) {
+  const r = match.matchResults.find(
+    (result) => result.resultTypeID === ResultType.Finished
+  );
+
+  if (r === undefined) {
+    window.document.location.reload();
+  } else {
+    return r.pointsTeam2;
+  }
+}
 </script>
 
 <template>
@@ -80,17 +106,9 @@ function formatMatchTime(matchDateTime: string) {
                   v-if="item.matchIsFinished"
                   class="text-xs sm:text-lg font-serif font-thin"
                 >
-                  ({{
-                    item.matchResults.find(
-                      (result) => result.resultTypeID === ResultType.Finished
-                    )?.pointsTeam1
-                  }}
+                  ({{ pTeam1(item) }}
                   :
-                  {{
-                    item.matchResults.find(
-                      (result) => result.resultTypeID === ResultType.Finished
-                    )?.pointsTeam2
-                  }})
+                  {{ pTeam2(item) }})
                 </div>
                 <div v-else-if="predicted(item.matchID)">
                   <UIcon name="i-heroicons-check" class="text-2xl" />
