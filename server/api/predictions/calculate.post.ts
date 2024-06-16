@@ -10,7 +10,7 @@ type MatchFromDB = {
 }[];
 
 export default eventHandler(async () => {
-  const BATCH_SIZE = 10;
+  const BATCH_SIZE = 1;
   const drymode = false;
   const predictions = await useDB().select().from(tables.predictions).all();
   const matches = await useDB()

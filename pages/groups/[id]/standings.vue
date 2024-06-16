@@ -51,7 +51,13 @@ const { data: predictions } = await useFetch("/api/predictions/all");
         </h3>
       </div>
       <div class="card-grid gap-2">
-        <UCard>
+        <UCard
+          :ui="{
+            background: 'bg-gray-900 dark:bg-gray-900',
+            ring: 'ring-1 ring-gray-800 dark:ring-gray-800',
+          }"
+          class="text-white"
+        >
           <div class="flex flex-col font-semibold gap-4">
             <div class="text-6xl font-bold">
               {{ predictions?.correctPredictions }}
@@ -66,7 +72,13 @@ const { data: predictions } = await useFetch("/api/predictions/all");
             </div>
           </div>
         </UCard>
-        <UCard>
+        <UCard
+          :ui="{
+            background: 'bg-gray-900 dark:bg-gray-900',
+            ring: 'ring-1 ring-gray-800 dark:ring-gray-800',
+          }"
+          class="text-white"
+        >
           <div class="flex flex-col font-semibold gap-4">
             <div class="text-6xl font-bold">
               {{ predictions?.scores.at(0) }}
@@ -77,7 +89,13 @@ const { data: predictions } = await useFetch("/api/predictions/all");
       </div>
     </div>
     <div class="card-grid-right gap-2">
-      <UCard class="mb-10">
+      <UCard
+        class="mb-10 text-white"
+        :ui="{
+          background: 'bg-gray-900 dark:bg-gray-900',
+          ring: 'ring-1 ring-gray-800 dark:ring-gray-800',
+        }"
+      >
         <div class="flex flex-col font-semibold gap-4">
           <div class="text-6xl font-bold">
             {{ predictions?.scores.at(-1) }}
@@ -85,7 +103,13 @@ const { data: predictions } = await useFetch("/api/predictions/all");
           <div>lowest score</div>
         </div>
       </UCard>
-      <UCard class="mb-10">
+      <UCard
+        class="mb-10 text-white"
+        :ui="{
+          background: 'bg-gray-900 dark:bg-gray-900',
+          ring: 'ring-1 ring-gray-800 dark:ring-gray-800',
+        }"
+      >
         <div class="flex flex-col font-semibold gap-4">
           <div class="text-6xl font-bold">
             {{ predictions?.forgotten }}

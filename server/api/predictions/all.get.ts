@@ -38,7 +38,7 @@ export default eventHandler(async () => {
       );
     });
     if (prediction.length) {
-      correctPredictions++;
+      correctPredictions += prediction.length;
     }
   });
 
