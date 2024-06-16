@@ -1,3 +1,4 @@
+import type { Match } from "~/types";
 export default eventHandler(async (event) => {
   const { user } = await requireUserSession(event);
   const { group } = getQuery(event);
@@ -22,6 +23,7 @@ export default eventHandler(async (event) => {
       )
     );
 
+  const matches = await $fetch<Match[]>("/api/matches");
   const userScore = scores.filter((s) => s.userId === user.id);
   const [uniqueUserScore] = Array.from(
     new Map(userScore.map((score) => [score.userId, score.points])).values()
@@ -32,11 +34,15 @@ export default eventHandler(async (event) => {
   const processedScores = processScores(uniqueScores);
   const processedPredictions = scores.map((s) => ({
     ...s.predictions,
+    date: new Date(
+      matches.find((m) => m.matchID === s.predictions.match)
+        ?.matchDateTimeUTC ?? 0
+    ).getTime(),
   }));
 
   const uniquePredictions = Array.from(
     new Map(processedPredictions.map((p) => [p.id, { ...p }])).values()
-  );
+  ).sort((a, b) => a.date - b.date);
 
   return {
     user: uniqueUserScore,

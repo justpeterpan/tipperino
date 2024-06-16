@@ -1,9 +1,14 @@
 <script lang="ts" setup>
+import { ResultType, type Match } from "~/types";
+import { calculateScore } from "~/server/utils/predictions.js";
+
 definePageMeta({
   middleware: "auth",
 });
 
 const route = useRoute();
+
+const { data: matches } = await useFetch<Match[]>("/api/matches");
 
 const { data } = await useFetch("/api/predictions/standings", {
   method: "GET",
@@ -36,6 +41,28 @@ const { data: predictions } = await useFetch("/api/predictions/all");
               >
                 {{ p.team1Name }} {{ p.team1Score }} : {{ p.team2Score }}
                 {{ p.team2Name }}
+                <span class="text-sm"
+                  >({{
+                    calculateScore(
+                      { team1Score: p.team1Score, team2Score: p.team2Score },
+                      {
+                        team1Score:
+                          matches
+                            ?.find((m) => m.matchID === p.match)
+                            ?.matchResults.filter(
+                              (r) => r.resultTypeID === ResultType.Finished
+                            )[0].pointsTeam1 ?? 0,
+                        team2Score:
+                          matches
+                            ?.find((m) => m.matchID === p.match)
+                            ?.matchResults.filter(
+                              (r) => r.resultTypeID === ResultType.Finished
+                            )[0].pointsTeam2 ?? 0,
+                      }
+                    )
+                  }}
+                  points)
+                </span>
               </div>
             </div>
           </div>
