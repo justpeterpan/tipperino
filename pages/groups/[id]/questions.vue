@@ -4,15 +4,12 @@ const { data: questions } = await useFetch("/api/predictions/questions", {
   method: "GET",
 });
 
-const { data: answers, refresh: refreshAnswers } = await useFetch(
-  "/api/predictions/answers",
-  {
-    method: "GET",
-    params: {
-      group: route.params.id as string,
-    },
-  }
-);
+const { data: answers } = await useFetch("/api/predictions/answers", {
+  method: "GET",
+  params: {
+    group: route.params.id as string,
+  },
+});
 </script>
 
 <template>
@@ -20,9 +17,13 @@ const { data: answers, refresh: refreshAnswers } = await useFetch(
     <QuestionCard
       v-for="q of questions"
       :key="q.id"
-      class="grid text-wrap gap-2 mb-10"
+      class="grid text-wrap"
+      :class="{ 'mb-10': q.id === questions?.length }"
       :question="q.question"
-      :a="answers?.filter((a) => a.question === q.id)[0] || null"
+      :answers="answers"
+      :qid="q.id"
+      :l="questions?.length"
+      :a="answers"
     />
   </div>
 </template>
