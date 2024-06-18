@@ -6,9 +6,11 @@ export default eventHandler(async (event) => {
     .select({
       userId: tables.users.id,
       userName: tables.users.name,
+      show: tables.users.show,
       points: tables.scores.points,
       group: tables.scores.group,
       predictions: tables.predictions,
+      match: tables.matches,
     })
     .from(tables.scores)
     .innerJoin(tables.users, eq(tables.users.id, tables.scores.user))
@@ -16,15 +18,17 @@ export default eventHandler(async (event) => {
       tables.predictions,
       eq(tables.predictions.group, tables.scores.group)
     )
+    .innerJoin(tables.matches, eq(tables.matches.id, tables.predictions.match))
     .where(
       and(
         eq(tables.scores.group, Number(group)),
-        eq(tables.predictions.finished, 1)
+        eq(tables.predictions.match, tables.matches.id)
       )
     );
 
   const matches = await $fetch<Match[]>("/api/matches");
   const userScore = scores.filter((s) => s.userId === user.id);
+  const showScore = userScore[0]?.show ?? 0;
   const [uniqueUserScore] = Array.from(
     new Map(userScore.map((score) => [score.userId, score.points])).values()
   );
@@ -47,6 +51,8 @@ export default eventHandler(async (event) => {
   return {
     user: uniqueUserScore,
     scores: processedScores,
-    predictions: uniquePredictions,
+    predictions: showScore
+      ? uniquePredictions.filter((p) => p.date < Date.now())
+      : uniquePredictions.filter((p) => p.finished === 1),
   };
 });

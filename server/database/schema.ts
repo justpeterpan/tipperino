@@ -5,6 +5,7 @@ export const users = sqliteTable("users", {
   id: text("id").primaryKey(),
   name: text("name").notNull().default(''),
   createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+  show: integer("show").default(0)
 });
 
 export const groups = sqliteTable("groups", {

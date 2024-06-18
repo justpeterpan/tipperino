@@ -34,7 +34,7 @@ const { data: predictions } = await useFetch("/api/predictions/all");
             >
           </div>
           <div class="mt-2 mb-6">
-            <div v-for="p of data?.predictions">
+            <div v-for="p of data?.predictions" :key="p.id">
               <div
                 v-if="p.user === score.userId"
                 class="font-thin font-serif italic text-lg ml-6"
@@ -44,20 +44,20 @@ const { data: predictions } = await useFetch("/api/predictions/all");
                 <span class="text-sm"
                   >({{
                     calculateScore(
-                      { team1Score: p.team1Score, team2Score: p.team2Score },
+                      { team1Score: p?.team1Score, team2Score: p?.team2Score },
                       {
                         team1Score:
                           matches
                             ?.find((m) => m.matchID === p.match)
-                            ?.matchResults.filter(
+                            ?.matchResults?.filter(
                               (r) => r.resultTypeID === ResultType.Finished
-                            )[0].pointsTeam1 ?? 0,
+                            )[0]?.pointsTeam1 ?? 0,
                         team2Score:
                           matches
                             ?.find((m) => m.matchID === p.match)
-                            ?.matchResults.filter(
+                            ?.matchResults?.filter(
                               (r) => r.resultTypeID === ResultType.Finished
-                            )[0].pointsTeam2 ?? 0,
+                            )[0]?.pointsTeam2 ?? 0,
                       }
                     )
                   }}

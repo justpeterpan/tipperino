@@ -1,10 +1,9 @@
 <script setup lang="ts">
 const nuxtApp = useNuxtApp();
 const { loggedIn, clear, user } = useUserSession();
-const router = useRouter();
 
-const isOpen = defineModel("isOpen", { default: false });
-const username = defineModel("username", { default: "" });
+const isOpen = defineModel<boolean>("isOpen", { default: false });
+const username = defineModel<string>("username", { default: "" });
 
 if (user.value?.name === "") {
   isOpen.value = true;
@@ -93,10 +92,10 @@ async function saveUsername() {
             <UInput v-model="username" placeholder="enter username" size="xl" />
             <UButton
               label="Save"
-              @click="saveUsername"
               color="black"
               size="xl"
               :disabled="!username"
+              @click="saveUsername"
             />
           </div>
         </div>

@@ -1,0 +1,1 @@
+ALTER TABLE `users` ADD `show` integer DEFAULT 0;

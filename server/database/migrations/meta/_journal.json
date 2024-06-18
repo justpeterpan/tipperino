@@ -29,6 +29,13 @@
       "when": 1718353386146,
       "tag": "0003_dapper_zombie",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1718667871125,
+      "tag": "0004_majestic_hercules",
+      "breakpoints": true
     }
   ]
 }

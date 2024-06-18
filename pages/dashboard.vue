@@ -8,7 +8,7 @@ definePageMeta({
 const { user } = useUserSession();
 const toast = useToast();
 
-const isOpen = defineModel("isOpen", { default: false });
+const isOpen = defineModel<boolean>("isOpen", { default: false });
 const isLoading = ref(false);
 
 const { data: groups, refresh: refreshGroups } = await useFetch<Group[]>(
@@ -18,11 +18,13 @@ const { data: invites, refresh: refreshInvites } = await useFetch(
   "/api/invites"
 );
 
+const { data: show } = await useFetch("/api/auth/show", { method: "GET" });
+
 const adminGroups = computed(() =>
   groups.value?.filter((g) => g.role === "admin")
 );
 
-const groupName = defineModel("groupName", { default: "" });
+const groupName = defineModel<string>("groupName", { default: "" });
 
 function cancel() {
   isOpen.value = false;
@@ -49,7 +51,7 @@ async function create() {
 
 // filter members by admin role
 const selected = ref(adminGroups.value?.[0]);
-const inviteName = defineModel("inviteName", { default: "" });
+const inviteName = defineModel<string>("inviteName", { default: "" });
 async function invite() {
   const res = await $fetch<{ message: string }>("/api/invites", {
     method: "POST",
@@ -82,6 +84,13 @@ async function decline(id: number) {
   });
   await refreshInvites();
 }
+const toggle = ref(show.value?.[0].show === 1);
+watch(toggle, async (value) => {
+  await $fetch("/api/auth/show", {
+    method: "PATCH",
+    body: { show: value ? 1 : 0 },
+  });
+});
 </script>
 
 <template>
@@ -90,8 +99,17 @@ async function decline(id: number) {
       Welcome,
       <span class="font-serif font-thin italic">{{ user?.name }}</span>
     </h3>
-    <h1 class="text-3xl/6 font-black pb-4">Dashboard</h1>
+    <h1 class="text-3xl/6 font-black pb-10">Dashboard</h1>
 
+    <div class="flex flex-row items-center gap-2">
+      <UToggle
+        v-model="toggle"
+        size="lg"
+        on-icon="i-heroicons-check-20-solid"
+        off-icon="i-heroicons-x-mark-20-solid"
+      />
+      <div>Show group predictions immediately after match starts</div>
+    </div>
     <UDivider class="w-full py-8" label="✦" />
     <section>
       <div v-if="groups?.length">
@@ -126,10 +144,10 @@ async function decline(id: number) {
       </div>
       <UButton
         label="Create Group"
-        @click="isOpen = true"
         class="w-32"
         color="black"
         size="xl"
+        @click="isOpen = true"
       />
     </section>
 
@@ -139,28 +157,24 @@ async function decline(id: number) {
       </h2>
       <div class="pb-4">
         <ul v-if="invites?.invites.length">
-          <li
-            class="ml-2"
-            v-for="invite of invites.invites"
-            :key="invite.inviteId"
-          >
+          <li v-for="i of invites.invites" :key="i.inviteId" class="ml-2">
             <div class="flex w-64 items-center gap-2">
               <UIcon name="i-heroicons-user-group-20-solid" class="text-xl" />
               <div class="w-32">
-                {{ invite.name }}
+                {{ i.name }}
               </div>
               <UButton
                 icon="i-heroicons-check"
                 class="max-w-fit"
                 color="emerald"
-                @click="accept(invite.inviteId, invite.groupId)"
+                @click="accept(i.inviteId, i.groupId)"
               />
               <UButton
                 icon="i-heroicons-x-mark"
                 class="max-w-fit"
                 color="rose"
                 variant="outline"
-                @click="decline(invite.inviteId)"
+                @click="decline(i.inviteId)"
               />
             </div>
           </li>
@@ -172,14 +186,10 @@ async function decline(id: number) {
       <h2 class="text-xl font-thin mb-2 mt-8">Pending invitations you sent</h2>
       <div class="pb-4">
         <ul v-if="invites?.pendingInvites.length">
-          <li
-            class="ml-2"
-            v-for="invite of invites.pendingInvites"
-            :key="invite.id"
-          >
+          <li v-for="i of invites.pendingInvites" :key="i.id" class="ml-2">
             <div class="flex w-64 items-center gap-2">
               <UIcon name="i-heroicons-envelope-open" class="text-xl" />
-              <div class="w-32">{{ invite.user }}</div>
+              <div class="w-32">{{ i.user }}</div>
             </div>
           </li>
         </ul>
@@ -218,10 +228,10 @@ async function decline(id: number) {
       <UButton
         label="Invite"
         :disabled="!inviteName"
-        @click="invite()"
         class="w-32"
         color="black"
         size="xl"
+        @click="invite()"
       />
     </section>
 
@@ -246,18 +256,18 @@ async function decline(id: number) {
           <div class="grid grid-cols-2 gap-2 w-full">
             <UButton
               label="Create"
-              @click="create"
               color="black"
               :loading="isLoading"
               :disabled="!groupName"
               size="xl"
+              @click="create"
             />
             <UButton
               label="Cancel"
-              @click="cancel"
               variant="outline"
               color="black"
               size="xl"
+              @click="cancel"
             />
           </div>
         </div>
