@@ -1,11 +1,7 @@
 <script lang="ts" setup>
 import type { Group } from "~/types";
 
-const nuxtApp = useNuxtApp();
-
-definePageMeta({
-  middleware: "auth",
-});
+definePageMeta({ middleware: "auth" });
 
 const route = useRoute();
 
@@ -23,6 +19,7 @@ const activeRoute = computed(() => {
   if (route.path.includes("matches")) return "matches";
   if (route.path.includes("standings")) return "standings";
   if (route.path.includes("questions")) return "questions";
+  return "matches";
 });
 
 if (status.value !== "pending" && !group.value) navigateTo("/");

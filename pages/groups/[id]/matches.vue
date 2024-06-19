@@ -1,11 +1,7 @@
 <script lang="ts" setup>
 import type { Match } from "~/types";
 
-const nuxtApp = useNuxtApp();
-
-definePageMeta({
-  middleware: "auth",
-});
+definePageMeta({ middleware: "auth" });
 
 const { data: matches } = await useFetch<Match[]>("/api/matches");
 

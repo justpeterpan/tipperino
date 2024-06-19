@@ -27,45 +27,66 @@ const { data: predictions } = await useFetch("/api/predictions/all");
           :key="score.userName"
           class="list-grid"
         >
-          <div class="flex justify-between lowercase">
-            {{ score.userName }}
-            <span class="text-right font-serif italic font-medium">
-              {{ score.points }} points</span
-            >
-          </div>
-          <div class="mt-2 mb-6">
-            <div v-for="p of data?.predictions" :key="p.id">
-              <div
-                v-if="p.user === score.userId"
-                class="font-thin font-serif italic text-lg ml-6"
-              >
-                {{ p.team1Name }} {{ p.team1Score }} : {{ p.team2Score }}
-                {{ p.team2Name }}
-                <span class="text-sm"
-                  >({{
-                    calculateScore(
-                      { team1Score: p?.team1Score, team2Score: p?.team2Score },
-                      {
-                        team1Score:
-                          matches
-                            ?.find((m) => m.matchID === p.match)
-                            ?.matchResults?.filter(
-                              (r) => r.resultTypeID === ResultType.Finished
-                            )[0]?.pointsTeam1 ?? 0,
-                        team2Score:
-                          matches
-                            ?.find((m) => m.matchID === p.match)
-                            ?.matchResults?.filter(
-                              (r) => r.resultTypeID === ResultType.Finished
-                            )[0]?.pointsTeam2 ?? 0,
-                      }
-                    )
-                  }}
-                  points)
-                </span>
+          <UAccordion
+            :items="[{ label: score.userName, slot: 'score' }]"
+            multiple
+          >
+            <template #default="{ open }">
+              <div class="accordion-grid items-center">
+                <UIcon
+                  name="i-heroicons-chevron-right-20-solid"
+                  class="size-5 -ml-2 mt-1 ms-auto transform transition-transform duration-200"
+                  :class="[open && 'rotate-90']"
+                />
+                <div
+                  class="flex ml-2 sm:ml-0 justify-between lowercase cursor-pointer"
+                >
+                  {{ score.userName }}
+                  <span class="text-right font-serif italic font-medium">
+                    {{ score.points }} points</span
+                  >
+                </div>
               </div>
-            </div>
-          </div>
+            </template>
+            <template #score>
+              <div class="mt-2 mb-6">
+                <div v-for="p of data?.predictions" :key="p.id">
+                  <div
+                    v-if="p.user === score.userId"
+                    class="font-thin font-serif italic text-lg ml-6"
+                  >
+                    {{ p.team1Name }} {{ p.team1Score }} : {{ p.team2Score }}
+                    {{ p.team2Name }}
+                    <span class="text-sm"
+                      >({{
+                        calculateScore(
+                          {
+                            team1Score: p?.team1Score,
+                            team2Score: p?.team2Score,
+                          },
+                          {
+                            team1Score:
+                              matches
+                                ?.find((m) => m.matchID === p.match)
+                                ?.matchResults?.filter(
+                                  (r) => r.resultTypeID === ResultType.Finished
+                                )[0]?.pointsTeam1 ?? 0,
+                            team2Score:
+                              matches
+                                ?.find((m) => m.matchID === p.match)
+                                ?.matchResults?.filter(
+                                  (r) => r.resultTypeID === ResultType.Finished
+                                )[0]?.pointsTeam2 ?? 0,
+                          }
+                        )
+                      }}
+                      points)
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </UAccordion>
         </li>
       </ul>
     </div>
@@ -156,5 +177,10 @@ const { data: predictions } = await useFetch("/api/predictions/all");
 .card-grid-right {
   display: grid;
   grid-template-columns: 1fr 60%;
+}
+
+.accordion-grid {
+  display: grid;
+  grid-template-columns: 1% 1fr;
 }
 </style>
