@@ -35,11 +35,11 @@ const { data: predictions } = await useFetch("/api/predictions/all");
               <div class="accordion-grid items-center">
                 <UIcon
                   name="i-heroicons-chevron-right-20-solid"
-                  class="size-5 -ml-2 mt-1 ms-auto transform transition-transform duration-200"
+                  class="size-5 -ml-[6px] mt-1 ms-auto transform transition-transform duration-200"
                   :class="[open && 'rotate-90']"
                 />
                 <div
-                  class="flex ml-2 sm:ml-0 justify-between lowercase cursor-pointer"
+                  class="flex ml-4 sm:ml-1.5 justify-between lowercase cursor-pointer"
                 >
                   {{ score.userName }}
                   <span class="text-right font-serif italic font-medium">
