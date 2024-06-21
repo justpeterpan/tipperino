@@ -65,7 +65,7 @@ async function save() {
   // timout to prevent flashing of switch from save to edit button
   setTimeout(() => {
     isLoading.value = false;
-  }, 5000);
+  }, 2000);
 }
 
 function predicted(match: number) {
