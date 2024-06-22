@@ -1,13 +1,5 @@
 <script lang="ts" setup>
 import { ResultType, type Match, type Prediction } from "~/types";
-import {
-  VisXYContainer,
-  VisAxis,
-  VisCrosshair,
-  VisTooltip,
-  VisBulletLegend,
-  VisGroupedBar,
-} from "@unovis/vue";
 
 definePageMeta({ middleware: "auth" });
 
@@ -144,8 +136,6 @@ const template = (d: DataRecord) =>
   ].join(", ");
 const x = (d: DataRecord) => d.x;
 const y = [(d: DataRecord) => d.y, (d: DataRecord) => d.y1];
-const xNumTicks = prepareGraphData().length;
-const graphData: Ref<DataRecord[]> = ref([]);
 const items = [
   {
     name:
@@ -164,9 +154,6 @@ const items = [
       )?.userName || "who knows",
   },
 ];
-onMounted(() => {
-  graphData.value = prepareGraphData();
-});
 </script>
 
 <template>
@@ -174,32 +161,14 @@ onMounted(() => {
     <div class="font-black text-2xl">
       <UCard class="mb-10 min-h-96">
         <ClientOnly>
-          <VisXYContainer
-            v-if="graphData.length > 0"
-            class="graph"
-            :padding="{ top: 8, bottom: 2, left: 0, right: 6 }"
-            :data="graphData"
-          >
-            <VisGroupedBar :x="x" :y="y" :group-width="20" :bar-padding="0.1" />
-            <VisAxis
-              :num-ticks="xNumTicks"
-              :tick-line="undefined"
-              :grid-line="false"
-              type="x"
-              label="Spieltag"
-              :domain-line="false"
-            />
-            <VisAxis
-              :fallback-value="0"
-              :grid-line="true"
-              type="y"
-              :domain-line="false"
-              :tick-line="undefined"
-            />
-            <VisTooltip />
-            <VisCrosshair :template="template" />
-          </VisXYContainer>
-          <VisBulletLegend :items="items" />
+          <ScoreGraph
+            :graph-data="prepareGraphData()"
+            :x-num-ticks="prepareGraphData().length"
+            :x="x"
+            :y="y"
+            :items="items"
+            :template="template"
+          />
         </ClientOnly>
       </UCard>
       <ul>
