@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import { ResultType, type Match, type Prediction } from "~/types";
-import { calculateScore } from "~/server/utils/predictions.js";
 import {
   VisXYContainer,
-  VisLine,
   VisAxis,
   VisCrosshair,
   VisTooltip,
@@ -24,11 +22,11 @@ const { data: matches } = await useFetch<Match[]>("/api/matches");
 
 function getActualMatchResult(
   matchID: number,
-  matches: Match[]
+  m: Match[]
 ): { team1Score: number; team2Score: number } {
-  const match = matches.find((m) => m.matchID === matchID);
-  if (match) {
-    const result = match.matchResults.find(
+  const ma = m.find((m) => m.matchID === matchID);
+  if (ma) {
+    const result = ma.matchResults.find(
       (r) => r.resultTypeID === ResultType.Finished
     );
     if (result) {
@@ -43,18 +41,18 @@ function consolidateScore(
 ) {
   const result = {};
 
-  for (const user in data) {
-    const matches = data[user];
+  for (const u in data) {
+    const userMatches = data[u];
     const scoresByDate = {};
 
-    matches.forEach((match) => {
-      if (!scoresByDate[match.date]) {
-        scoresByDate[match.date] = 0;
+    userMatches.forEach((m) => {
+      if (!scoresByDate[m.date]) {
+        scoresByDate[m.date] = 0;
       }
-      scoresByDate[match.date] += match.score ?? 0;
+      scoresByDate[m.date] += m.score ?? 0;
     });
 
-    result[user] = Object.keys(scoresByDate).map((date) => {
+    result[u] = Object.keys(scoresByDate).map((date) => {
       return {
         date: date,
         score: scoresByDate[date] ?? 0,
@@ -82,7 +80,7 @@ function calcScore(
   const scoresPerUser = {};
   data?.predictions.forEach((prediction) => {
     const actualResult = getActualMatchResult(prediction.match, matches || []);
-    const score = calculateScore(
+    const score = calcS(
       { team1Score: prediction.team1Score, team2Score: prediction.team2Score },
       actualResult
     );
@@ -145,7 +143,7 @@ const template = (d: DataRecord) =>
 const x = (d: DataRecord) => d.x;
 const y = [(d: DataRecord) => d.y, (d: DataRecord) => d.y1];
 const xNumTicks = prepareGraphData().length;
-const graphData: DataRecord[] = prepareGraphData();
+let graphData: DataRecord[] = [];
 const items = [
   {
     name:
@@ -164,12 +162,15 @@ const items = [
       )?.userName || "who knows",
   },
 ];
+onMounted(() => {
+  graphData = prepareGraphData();
+});
 </script>
 
 <template>
   <div>
     <div class="font-black text-2xl">
-      <UCard class="mb-10 min-h-96">
+      <UCard v-if="graphData" class="mb-10 min-h-96">
         <ClientOnly>
           <VisXYContainer
             class="graph"
@@ -236,7 +237,7 @@ const items = [
                     {{ p.team2Name }}
                     <span class="text-sm"
                       >({{
-                        calculateScore(
+                        calcS(
                           {
                             team1Score: p?.team1Score,
                             team2Score: p?.team2Score,
