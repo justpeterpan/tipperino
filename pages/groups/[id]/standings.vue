@@ -6,11 +6,11 @@ definePageMeta({ middleware: "auth" });
 const route = useRoute();
 
 const { data: predictions } = await useFetch("/api/predictions/all");
+const { data: matches } = await useFetch<Match[]>("/api/matches");
 const { data } = await useFetch("/api/predictions/standings", {
   method: "GET",
   params: { group: route.params.id as string },
 });
-const { data: matches } = await useFetch<Match[]>("/api/matches");
 
 function getActualMatchResult(
   matchID: number,
@@ -21,17 +21,18 @@ function getActualMatchResult(
     const result = ma.matchResults.find(
       (r) => r.resultTypeID === ResultType.Finished
     );
-    if (result) {
-      return { team1Score: result.pointsTeam1, team2Score: result.pointsTeam2 };
-    }
+    return {
+      team1Score: result?.pointsTeam1 || 0,
+      team2Score: result?.pointsTeam2 || 0,
+    };
   }
   return { team1Score: 0, team2Score: 0 };
 }
+type ConsolidatedScore = Record<string, { date: string; score: number }[]>;
+type Score = Record<string, { match: number; date: string; score: number }[]>;
 
-function consolidateScore(
-  data: Record<string, { match: number; date: string; score: number }[]>
-): Record<string, { date: string; score: number }[]> {
-  const result: Record<string, { date: string; score: number }[]> = {};
+function consolidateScore(data: Score): ConsolidatedScore {
+  const result: ConsolidatedScore = {};
 
   for (const u in data) {
     const userMatches = data[u];
@@ -55,23 +56,17 @@ function consolidateScore(
   return result;
 }
 
-function calcScore(
-  data: {
-    predictions: Prediction;
-    user: number;
-    scores: {
-      userId: string;
-      userName: string;
-      points: number;
-      group: number;
-      rank?: number | undefined;
-    }[];
-  } | null,
-  matches: Match[] | null
-) {
-  const scoresPerUser: {
-    [key: string]: { match: number; score: number; date: string }[];
-  } = {};
+type Scores = {
+  userId: string;
+  userName: string;
+  points: number;
+  group: number;
+  rank?: number | undefined;
+}[];
+type ScoreData = { predictions: Prediction; user: number; scores: Scores };
+
+function calcScore(data: ScoreData | null, matches: Match[] | null) {
+  const scoresPerUser: Score = {};
   data?.predictions.forEach((prediction) => {
     const actualResult = getActualMatchResult(prediction.match, matches || []);
     const score = calcS(
@@ -89,6 +84,7 @@ function calcScore(
       date: new Date(prediction.date).toISOString().split("T")[0],
     });
   });
+
   const newScoresPerUser = consolidateScore(scoresPerUser);
   return newScoresPerUser;
 }
@@ -116,44 +112,19 @@ function prepareGraphData(): DataRecord[] {
   }));
 }
 
+const u = (user: number) => {
+  return data.value?.scores.find(
+    (s) =>
+      Object.entries(calcScore(data.value, matches.value))[user][0] === s.userId
+  )?.userName;
+};
+
 type DataRecord = { x: number; y: number; y1: number };
 const template = (d: DataRecord) =>
-  [
-    `${
-      data.value?.scores.find(
-        (s) =>
-          Object.entries(calcScore(data.value, matches.value))[0][0] ===
-          s.userId
-      )?.userName
-    }: ${d.y}`,
-    `${
-      data.value?.scores.find(
-        (s) =>
-          Object.entries(calcScore(data.value, matches.value))[1][0] ===
-          s.userId
-      )?.userName
-    }: ${d.y1}`,
-  ].join(", ");
+  [`${u(0)}: ${d.y}`, `${u(1)}: ${d.y1}`].join(", ");
 const x = (d: DataRecord) => d.x;
 const y = [(d: DataRecord) => d.y, (d: DataRecord) => d.y1];
-const items = [
-  {
-    name:
-      data.value?.scores.find(
-        (s) =>
-          Object.entries(calcScore(data.value, matches.value))[0][0] ===
-          s.userId
-      )?.userName || "who knows",
-  },
-  {
-    name:
-      data.value?.scores.find(
-        (s) =>
-          Object.entries(calcScore(data.value, matches.value))[1][0] ===
-          s.userId
-      )?.userName || "who knows",
-  },
-];
+const items = [{ name: u(0) || "who knows" }, { name: u(1) || "who knows" }];
 </script>
 
 <template>
