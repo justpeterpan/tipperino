@@ -38,12 +38,12 @@ function getActualMatchResult(
 
 function consolidateScore(
   data: Record<string, { match: number; date: string; score: number }[]>
-) {
-  const result = {};
+): Record<string, { date: string; score: number }[]> {
+  const result: Record<string, { date: string; score: number }[]> = {};
 
   for (const u in data) {
     const userMatches = data[u];
-    const scoresByDate = {};
+    const scoresByDate: { [key: string]: number } = {};
 
     userMatches.forEach((m) => {
       if (!scoresByDate[m.date]) {
@@ -77,7 +77,9 @@ function calcScore(
   } | null,
   matches: Match[] | null
 ) {
-  const scoresPerUser = {};
+  const scoresPerUser: {
+    [key: string]: { match: number; score: number; date: string }[];
+  } = {};
   data?.predictions.forEach((prediction) => {
     const actualResult = getActualMatchResult(prediction.match, matches || []);
     const score = calcS(
@@ -99,7 +101,7 @@ function calcScore(
   return newScoresPerUser;
 }
 
-function scoreForUser(index: number, matchDay: number, day) {
+function scoreForUser(index: number, day: string) {
   return (
     Object.entries(calcScore(data.value, matches.value))[index][1].find(
       (s) => s.date === day
@@ -117,8 +119,8 @@ function prepareGraphData(): DataRecord[] {
   ];
   return uniqueMatchDays.map((day, index) => ({
     x: index + 1,
-    y: scoreForUser(0, index, day),
-    y1: scoreForUser(1, index, day),
+    y: scoreForUser(0, day),
+    y1: scoreForUser(1, day),
   }));
 }
 
@@ -143,7 +145,7 @@ const template = (d: DataRecord) =>
 const x = (d: DataRecord) => d.x;
 const y = [(d: DataRecord) => d.y, (d: DataRecord) => d.y1];
 const xNumTicks = prepareGraphData().length;
-let graphData: DataRecord[] = [];
+const graphData: Ref<DataRecord[]> = ref([]);
 const items = [
   {
     name:
@@ -163,16 +165,17 @@ const items = [
   },
 ];
 onMounted(() => {
-  graphData = prepareGraphData();
+  graphData.value = prepareGraphData();
 });
 </script>
 
 <template>
   <div>
     <div class="font-black text-2xl">
-      <UCard v-if="graphData" class="mb-10 min-h-96">
+      <UCard class="mb-10 min-h-96">
         <ClientOnly>
           <VisXYContainer
+            v-if="graphData.length > 0"
             class="graph"
             :padding="{ top: 8, bottom: 2, left: 0, right: 6 }"
             :data="graphData"
