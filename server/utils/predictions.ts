@@ -3,12 +3,12 @@ type MatchResult = {
   team2Score: number;
 };
 
-const isWrong = (prediction: MatchResult, actual: MatchResult) => {
-  return (
-    prediction.team1Score !== actual.team1Score ||
-    prediction.team2Score !== actual.team2Score
-  );
-};
+// const isWrong = (prediction: MatchResult, actual: MatchResult) => {
+//   return (
+//     prediction.team1Score !== actual.team1Score ||
+//     prediction.team2Score !== actual.team2Score
+//   );
+// };
 
 const isExact = (prediction: MatchResult, actual: MatchResult) => {
   return (
@@ -56,6 +56,12 @@ export function calculateScore(
   prediction: MatchResult,
   actual: MatchResult
 ): number {
+  if (
+    prediction.team1Score === undefined ||
+    prediction.team2Score === undefined
+  ) {
+    return 0;
+  }
   if (isExact(prediction, actual)) {
     return 3;
   }

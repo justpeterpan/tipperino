@@ -63,6 +63,8 @@ export type Group = {
   role?: "member" | "admin";
 };
 
+export type Prediction = {   date: number;   user: string  ; id: number   ;group: number  ; finished: number  ; updatedAt: string  ; match: number  ; team1Id: number  ; team1Name: string  ; team1Score: number  ; team2Id: number  ; team2Name: string  ; team2Score: number }[]
+
 export type ResultInfo = {
   id: number;
   name: string;
