@@ -5,7 +5,7 @@ definePageMeta({ middleware: "auth" });
 
 const { data: matches } = await useFetch<Match[]>("/api/matches");
 
-const matchDates = new Set(
+const groupMatchDates = new Set(
   matches.value
     ?.filter(
       (match) =>
@@ -15,7 +15,22 @@ const matchDates = new Set(
     .map((match) => match.matchDateTime.slice(0, 10))
 );
 
-const matchesPerDate = Array.from(matchDates).map((date) => {
+const koMatchDates = new Set(
+  matches.value
+    ?.filter((match) => match.group.groupName.includes("Achtelfinale"))
+    .map((match) => match.matchDateTime.slice(0, 10))
+);
+
+const groupMatchesPerDate = Array.from(groupMatchDates).map((date) => {
+  return {
+    date,
+    matches: matches.value?.filter((match) =>
+      match.matchDateTime.includes(date)
+    ),
+  };
+});
+
+const koMatchesPerDate = Array.from(koMatchDates).map((date) => {
   return {
     date,
     matches: matches.value?.filter((match) =>
@@ -26,6 +41,12 @@ const matchesPerDate = Array.from(matchDates).map((date) => {
 </script>
 <template>
   <div>
-    <MatchList :matches-per-date="matchesPerDate" />
+    <MatchList :matches-per-date="koMatchesPerDate" stage="16" />
+    <UDivider label="✦" class="my-8" />
+    <MatchList
+      :matches-per-date="groupMatchesPerDate"
+      stage="group"
+      class="mb-4"
+    />
   </div>
 </template>

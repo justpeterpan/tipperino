@@ -5,6 +5,7 @@ const route = useRoute();
 
 const props = defineProps<{
   matchesPerDate: { date: string; matches: Match[] | undefined }[];
+  stage: "group" | "16" | "8" | "4" | "2";
 }>();
 
 const { data: predictions, refresh: refreshPredictions } = await useFetch(
@@ -55,10 +56,24 @@ function isOpen(date: string): boolean {
   currentDate.setDate(currentDate.getDate() - 1);
   return new Date(date).getTime() >= currentDate.getTime();
 }
+
+const round = computed(() => {
+  if (props.stage === "group") return "Gruppenphase";
+  if (props.stage === "16") return "Achtelfinale";
+  if (props.stage === "8") return "Viertelfinale";
+  if (props.stage === "4") return "Halbfinale";
+  if (props.stage === "2") return "Finale";
+  return "Gruppenphase";
+});
 </script>
 
 <template>
   <div class="max-w-fit">
+    <h2
+      class="text-4xl sm:text-5xl font-black uppercase mb-8 tracking-[-0.06em]"
+    >
+      {{ round }}
+    </h2>
     <div v-for="date of transformedMatches" :key="date.date" class="max-w-fit">
       <UAccordion
         :items="[

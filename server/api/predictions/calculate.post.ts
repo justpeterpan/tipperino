@@ -105,6 +105,11 @@ export default eventHandler(async (event) => {
                 )
                 .returning()
                 .get();
+              console.log(
+                `Updated score ${foundScore.points} to ${
+                  foundScore.points + score
+                } for user ${prediction.user} in group ${prediction.group}`
+              );
             }
 
             if (drymode) {
