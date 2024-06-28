@@ -1,4 +1,4 @@
-import { Match } from "~/types";
+import type { Match } from "~/types";
 
 export default eventHandler(async () => {
   console.info("fetching matches");

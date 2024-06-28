@@ -97,9 +97,34 @@ function scoreForUser(index: number, day: string) {
   );
 }
 
-function prepareGraphData(): DataRecord[] {
+function prepareGraphDataGroup(): DataRecord[] {
   const finishedMatches =
-    matches.value?.filter((match) => match.matchIsFinished) ?? [];
+    matches.value?.filter(
+      (match) =>
+        match.matchIsFinished &&
+        !match.group.groupName.includes("final") &&
+        !match.group.groupName.includes("Finale")
+    ) ?? [];
+  const uniqueMatchDays = [
+    ...new Set(
+      finishedMatches.map((match) => match.matchDateTime.split("T")[0])
+    ),
+  ];
+  return uniqueMatchDays.map((day, index) => ({
+    x: index + 1,
+    y: scoreForUser(0, day),
+    y1: scoreForUser(1, day),
+  }));
+}
+
+function prepareGraphDataKo(): DataRecord[] {
+  const finishedMatches =
+    matches.value?.filter(
+      (match) =>
+        match.matchIsFinished &&
+        match.group.groupName.includes("final") &&
+        match.group.groupName.includes("Finale")
+    ) ?? [];
   const uniqueMatchDays = [
     ...new Set(
       finishedMatches.map((match) => match.matchDateTime.split("T")[0])
@@ -129,88 +154,117 @@ const items = [{ name: u(0) || "who knows" }, { name: u(1) || "who knows" }];
 
 <template>
   <div>
-    <div class="font-black text-2xl">
-      <UCard class="mb-10 min-h-96">
-        <ClientOnly>
-          <ScoreGraph
-            :graph-data="prepareGraphData()"
-            :x-num-ticks="prepareGraphData().length"
-            :x="x"
-            :y="y"
-            :items="items"
-            :template="template"
-          />
-        </ClientOnly>
-      </UCard>
-      <ul>
-        <li
-          v-for="score of data?.scores"
-          :key="score.userName"
-          class="list-grid"
-        >
-          <UAccordion
-            :items="[{ label: score.userName, slot: 'score' }]"
-            multiple
+    <div>
+      <div class="font-black text-2xl">
+        <div v-if="prepareGraphDataKo().length">
+          <h2
+            class="text-4xl sm:text-5xl font-black uppercase my-8 tracking-[-0.06em]"
           >
-            <template #default="{ open }">
-              <div class="accordion-grid items-center">
-                <UIcon
-                  name="i-heroicons-chevron-right-20-solid"
-                  class="size-5 -ml-[6px] mt-1 ms-auto transform transition-transform duration-200"
-                  :class="[open && 'rotate-90']"
-                />
-                <div
-                  class="flex ml-4 sm:ml-2.5 justify-between lowercase cursor-pointer"
-                >
-                  {{ score.userName }}
-                  <span class="text-right font-serif italic font-medium">
-                    {{ score.points }} points</span
-                  >
-                </div>
-              </div>
-            </template>
-            <template #score>
-              <div class="mt-2 mb-6">
-                <div v-for="p of data?.predictions" :key="p.id">
+            Endrunde
+          </h2>
+          <UCard class="mb-10 min-h-96">
+            <ClientOnly>
+              <ScoreGraph
+                :graph-data="prepareGraphDataKo()"
+                :x-num-ticks="prepareGraphDataKo().length"
+                :x="x"
+                :y="y"
+                :items="items"
+                :template="template"
+              />
+            </ClientOnly>
+          </UCard>
+        </div>
+        <ul>
+          <li
+            v-for="score of data?.scores"
+            :key="score.userName"
+            class="list-grid"
+          >
+            <UAccordion
+              :items="[{ label: score.userName, slot: 'score' }]"
+              multiple
+            >
+              <template #default="{ open }">
+                <div class="accordion-grid items-center">
+                  <UIcon
+                    name="i-heroicons-chevron-right-20-solid"
+                    class="size-5 -ml-[6px] mt-1 ms-auto transform transition-transform duration-200"
+                    :class="[open && 'rotate-90']"
+                  />
                   <div
-                    v-if="p.user === score.userId"
-                    class="font-thin font-serif italic text-lg ml-6"
+                    class="flex ml-4 sm:ml-2.5 justify-between lowercase cursor-pointer"
                   >
-                    {{ p.team1Name }} {{ p.team1Score }} : {{ p.team2Score }}
-                    {{ p.team2Name }}
-                    <span class="text-sm"
-                      >({{
-                        calcS(
-                          {
-                            team1Score: p?.team1Score,
-                            team2Score: p?.team2Score,
-                          },
-                          {
-                            team1Score:
-                              matches
-                                ?.find((m) => m.matchID === p.match)
-                                ?.matchResults?.filter(
-                                  (r) => r.resultTypeID === ResultType.Finished
-                                )[0]?.pointsTeam1 ?? 0,
-                            team2Score:
-                              matches
-                                ?.find((m) => m.matchID === p.match)
-                                ?.matchResults?.filter(
-                                  (r) => r.resultTypeID === ResultType.Finished
-                                )[0]?.pointsTeam2 ?? 0,
-                          }
-                        )
-                      }}
-                      points)
-                    </span>
+                    {{ score.userName }}
+                    <span class="text-right font-serif italic font-medium">
+                      {{ score.points }} points</span
+                    >
                   </div>
                 </div>
-              </div>
-            </template>
-          </UAccordion>
-        </li>
-      </ul>
+              </template>
+              <template #score>
+                <div class="mt-2 mb-6">
+                  <div v-for="p of data?.predictions" :key="p.id">
+                    <div
+                      v-if="p.user === score.userId"
+                      class="font-thin font-serif italic text-lg ml-6"
+                    >
+                      {{ p.team1Name }} {{ p.team1Score }} : {{ p.team2Score }}
+                      {{ p.team2Name }}
+                      <span class="text-sm"
+                        >({{
+                          calcS(
+                            {
+                              team1Score: p?.team1Score,
+                              team2Score: p?.team2Score,
+                            },
+                            {
+                              team1Score:
+                                matches
+                                  ?.find((m) => m.matchID === p.match)
+                                  ?.matchResults?.filter(
+                                    (r) =>
+                                      r.resultTypeID === ResultType.Finished
+                                  )[0]?.pointsTeam1 ?? 0,
+                              team2Score:
+                                matches
+                                  ?.find((m) => m.matchID === p.match)
+                                  ?.matchResults?.filter(
+                                    (r) =>
+                                      r.resultTypeID === ResultType.Finished
+                                  )[0]?.pointsTeam2 ?? 0,
+                            }
+                          )
+                        }}
+                        points)
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </UAccordion>
+          </li>
+        </ul>
+        <h2
+          class="text-4xl sm:text-5xl font-black uppercase my-8 tracking-[-0.06em]"
+        >
+          Gruppenphase
+        </h2>
+        <UCard class="mb-10 min-h-96">
+          <ClientOnly>
+            <ScoreGraph
+              :graph-data="prepareGraphDataGroup()"
+              :x-num-ticks="prepareGraphDataGroup().length"
+              :x="x"
+              :y="y"
+              :items="items"
+              :template="template"
+            />
+          </ClientOnly>
+        </UCard>
+      </div>
     </div>
+
     <UDivider class="w-full mb-8 mt-8" label="✦" />
     <div class="mb-2">
       <div class="mb-8">
