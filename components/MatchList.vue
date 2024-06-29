@@ -70,10 +70,14 @@ const round = computed(() => {
 <template>
   <div class="max-w-fit">
     <h2
-      class="text-4xl sm:text-5xl font-black uppercase mb-8 tracking-[-0.06em]"
+      class="text-4xl sm:text-5xl font-black uppercase tracking-[-0.06em]"
+      :class="{ 'mb-8': round === 'Gruppenphase' }"
     >
       {{ round }}
     </h2>
+    <h3 v-if="round !== 'Gruppenphase'" class="mb-8 italic font-serif">
+      Ergebnis nach Verlängerung zählt bei Verlängerung.
+    </h3>
     <div v-for="date of transformedMatches" :key="date.date" class="max-w-fit">
       <UAccordion
         :items="[
