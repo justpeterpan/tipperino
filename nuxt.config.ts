@@ -10,6 +10,9 @@ export default defineNuxtConfig({
     public: {
       api: process.env.API || "",
     },
+    session: {
+      maxAge: 60 * 60 * 24 * 7, // 1 week
+    },
   },
   nitro: {
     experimental: {
