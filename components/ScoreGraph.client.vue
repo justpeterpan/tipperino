@@ -9,7 +9,7 @@ import {
 } from "@unovis/vue";
 
 type DataRecord = { x: number; y: number; y1: number };
-defineProps<{
+const props = defineProps<{
   graphData: DataRecord[];
   xNumTicks: number;
   x: (d: DataRecord) => number;
@@ -19,32 +19,17 @@ defineProps<{
     name: string;
   }[];
 }>();
+
+const tickValues = Array.from({ length: props.xNumTicks }, (_, i) => i + 1);
 </script>
 
 <template>
   <div>
-    <VisXYContainer
-      v-if="graphData.length > 0"
-      class="graph"
-      :padding="{ top: 8, bottom: 2, left: 0, right: 6 }"
-      :data="graphData"
-    >
+    <VisXYContainer v-if="graphData.length > 0" class="graph" :padding="{ top: 8, bottom: 2, left: 0, right: 6 }" :data="graphData">
       <VisGroupedBar :x="x" :y="y" :group-width="20" :bar-padding="0.1" />
-      <VisAxis
-        :num-ticks="xNumTicks"
-        :tick-line="undefined"
-        :grid-line="false"
-        type="x"
-        label="Spieltag"
-        :domain-line="false"
-      />
-      <VisAxis
-        :fallback-value="0"
-        :grid-line="true"
-        type="y"
-        :domain-line="false"
-        :tick-line="undefined"
-      />
+      <VisAxis :num-ticks="xNumTicks" :tick-values="tickValues" :tick-line="undefined" :grid-line="false" type="x" label="Spieltag"
+        :domain-line="false" />
+      <VisAxis :fallback-value="0" :grid-line="true" type="y" :domain-line="false" :tick-line="undefined" />
       <VisTooltip />
       <VisCrosshair :template="template" />
     </VisXYContainer>

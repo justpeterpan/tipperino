@@ -3,13 +3,6 @@ type MatchResult = {
   team2Score: number;
 };
 
-// const isWrong = (prediction: MatchResult, actual: MatchResult) => {
-//   return (
-//     prediction.team1Score !== actual.team1Score ||
-//     prediction.team2Score !== actual.team2Score
-//   );
-// };
-
 const isExact = (prediction: MatchResult, actual: MatchResult) => {
   return (
     prediction.team1Score === actual.team1Score &&
