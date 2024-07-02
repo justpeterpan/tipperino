@@ -32,9 +32,15 @@ export default eventHandler(async (event) => {
   const processBatch = async (batch: MatchPredictions) => {
     await Promise.all(
       batch.map(async (prediction) => {
-        const [results] = matchFromApi.matchResults.filter(
-          (result) => result.resultTypeID === ResultType.Finished
-        );
+        const [results] = matchFromApi.matchResults.find(
+          (result) => result.resultTypeID === ResultType.ExtraTime
+        )
+          ? matchFromApi.matchResults.filter(
+              (result) => result.resultTypeID === ResultType.ExtraTime
+            )
+          : matchFromApi.matchResults.filter(
+              (result) => result.resultTypeID === ResultType.Finished
+            );
 
         const score = calculateScore(
           {

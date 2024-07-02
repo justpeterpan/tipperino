@@ -12,15 +12,19 @@ const { data } = await useFetch("/api/predictions/standings", {
   params: { group: route.params.id as string },
 });
 
+const getResultAfterExtraTime = (m: Match) => {
+  return m.matchResults.find((r) => r.resultTypeID === ResultType.ExtraTime);
+};
+
 function getActualMatchResult(
   matchID: number,
   m: Match[]
 ): { team1Score: number; team2Score: number } {
   const ma = m.find((m) => m.matchID === matchID);
   if (ma) {
-    const result = ma.matchResults.find(
-      (r) => r.resultTypeID === ResultType.Finished
-    );
+    const result =
+      getResultAfterExtraTime(ma) ||
+      ma.matchResults.find((r) => r.resultTypeID === ResultType.Finished);
     return {
       team1Score: result?.pointsTeam1 || 0,
       team2Score: result?.pointsTeam2 || 0,
@@ -142,6 +146,16 @@ const u = (user: number) => {
   )?.userName;
 };
 
+function getMatchResults(matchID: number, matches: Match[] | null) {
+  const match = matches?.find((m) => m.matchID === matchID);
+  if (!match) return null;
+  const results = match.matchResults;
+  if (!results) return null;
+  return results.find((r) => r.resultTypeID === ResultType.ExtraTime)
+    ? results.filter((r) => r.resultTypeID === ResultType.ExtraTime)
+    : results.filter((r) => r.resultTypeID === ResultType.Finished);
+}
+
 type DataRecord = { x: number; y: number; y1: number };
 const template = (d: DataRecord) =>
   [`${u(0)}: ${d.y}`, `${u(1)}: ${d.y1}`].join(", ");
@@ -209,6 +223,9 @@ const items = [{ name: u(0) || "who knows" }, { name: u(1) || "who knows" }];
                     >
                       {{ p.team1Name }} {{ p.team1Score }} : {{ p.team2Score }}
                       {{ p.team2Name }}
+                      {{
+                        getMatchResults(p.match, matches)?.[0]?.pointsTeam1 ?? 0
+                      }}
                       <span class="text-sm"
                         >({{
                           calcS(
@@ -218,19 +235,11 @@ const items = [{ name: u(0) || "who knows" }, { name: u(1) || "who knows" }];
                             },
                             {
                               team1Score:
-                                matches
-                                  ?.find((m) => m.matchID === p.match)
-                                  ?.matchResults?.filter(
-                                    (r) =>
-                                      r.resultTypeID === ResultType.Finished
-                                  )[0]?.pointsTeam1 ?? 0,
+                                getMatchResults(p.match, matches)?.[0]
+                                  ?.pointsTeam1 ?? 0,
                               team2Score:
-                                matches
-                                  ?.find((m) => m.matchID === p.match)
-                                  ?.matchResults?.filter(
-                                    (r) =>
-                                      r.resultTypeID === ResultType.Finished
-                                  )[0]?.pointsTeam2 ?? 0,
+                                getMatchResults(p.match, matches)?.[0]
+                                  ?.pointsTeam2 ?? 0,
                             }
                           )
                         }}
