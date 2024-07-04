@@ -216,7 +216,12 @@ const items = [{ name: u(0) || "who knows" }, { name: u(1) || "who knows" }];
               </template>
               <template #score>
                 <div class="mt-2 mb-6">
-                  <div v-for="p of data?.predictions" :key="p.id">
+                  <div
+                    v-for="p of data?.predictions.toSorted(
+                      (a, b) => b.date - a.date
+                    )"
+                    :key="p.id"
+                  >
                     <div
                       v-if="p.user === score.userId"
                       class="font-thin font-serif italic text-lg ml-6"

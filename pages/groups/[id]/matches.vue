@@ -15,11 +15,15 @@ const groupMatchDates = new Set(
     .map((match) => match.matchDateTime.slice(0, 10))
 );
 
-const koMatchDates = new Set(
-  matches.value
-    ?.filter((match) => match.group.groupName.includes("Achtelfinale"))
-    .map((match) => match.matchDateTime.slice(0, 10))
-);
+const koMatchDates = (
+  round: "Achtelfinale" | "Viertelfinale" | "Halbfinale" | "Finale"
+) => {
+  return new Set(
+    matches.value
+      ?.filter((match) => match.group.groupName.includes(round))
+      .map((match) => match.matchDateTime.slice(0, 10))
+  );
+};
 
 const groupMatchesPerDate = Array.from(groupMatchDates).map((date) => {
   return {
@@ -30,18 +34,30 @@ const groupMatchesPerDate = Array.from(groupMatchDates).map((date) => {
   };
 });
 
-const koMatchesPerDate = Array.from(koMatchDates).map((date) => {
-  return {
-    date,
-    matches: matches.value?.filter((match) =>
-      match.matchDateTime.includes(date)
-    ),
-  };
-});
+const koMatchesPerDate = (
+  round: "Achtelfinale" | "Viertelfinale" | "Halbfinale" | "Finale"
+) => {
+  return Array.from(koMatchDates(round)).map((date) => {
+    return {
+      date,
+      matches: matches.value?.filter((match) =>
+        match.matchDateTime.includes(date)
+      ),
+    };
+  });
+};
 </script>
 <template>
   <div>
-    <MatchList :matches-per-date="koMatchesPerDate" stage="16" />
+    <MatchList
+      :matches-per-date="koMatchesPerDate('Viertelfinale')"
+      stage="8"
+    />
+    <UDivider label="✦" class="my-8" />
+    <MatchList
+      :matches-per-date="koMatchesPerDate('Achtelfinale')"
+      stage="16"
+    />
     <UDivider label="✦" class="my-8" />
     <MatchList
       :matches-per-date="groupMatchesPerDate"

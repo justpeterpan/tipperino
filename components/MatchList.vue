@@ -68,96 +68,119 @@ const round = computed(() => {
 </script>
 
 <template>
-  <div class="max-w-fit">
-    <h2
-      class="text-4xl sm:text-5xl font-black uppercase tracking-[-0.06em]"
-      :class="{ 'mb-8': round === 'Gruppenphase' }"
-    >
-      {{ round }}
-    </h2>
-    <h3 v-if="round !== 'Gruppenphase'" class="mb-8 italic font-serif">
-      Ergebnis nach Verlängerung zählt bei Verlängerung.
-    </h3>
-    <div v-for="date of transformedMatches" :key="date.date" class="max-w-fit">
-      <UAccordion
-        :items="[
-          { label: date.date, defaultOpen: isOpen(date.date), slot: 'matches' },
-        ]"
+  <UAccordion
+    :items="[
+      { label: round, slot: 'rounds', defaultOpen: round !== 'Gruppenphase' },
+    ]"
+  >
+    <template #default>
+      <div class="max-w-fit">
+        <h2
+          class="cursor-pointer text-4xl sm:text-5xl font-black uppercase tracking-[-0.06em]"
+          :class="{
+            'mb-8': round === 'Gruppenphase' || round === 'Achtelfinale',
+          }"
+        >
+          {{ round }}
+        </h2>
+        <h3
+          v-if="round !== 'Achtelfinale' && round !== 'Gruppenphase'"
+          class="mb-8 italic font-serif"
+        >
+          Ergebnis nach Verlängerung zählt bei Verlängerung.
+        </h3>
+      </div>
+    </template>
+    <template #rounds>
+      <div
+        v-for="date of transformedMatches"
+        :key="date.date"
+        class="max-w-fit"
       >
-        <template #default>
-          <div class="flex items-center gap-2 mb-1 max-w-fit cursor-pointer">
-            <UIcon name="i-heroicons-calendar" />
-            <div class="font-serif font-thin text-lg">
-              {{
-                new Date(date.date).toLocaleDateString("de-DE", {
-                  dateStyle: "full",
-                })
-              }}
+        <UAccordion
+          :items="[
+            {
+              label: date.date,
+              defaultOpen: isOpen(date.date),
+              slot: 'matches',
+            },
+          ]"
+        >
+          <template #default>
+            <div class="flex items-center gap-2 mb-1 max-w-fit cursor-pointer">
+              <UIcon name="i-heroicons-calendar" />
+              <div class="font-serif font-thin text-lg">
+                {{
+                  new Date(date.date).toLocaleDateString("de-DE", {
+                    dateStyle: "full",
+                  })
+                }}
+              </div>
             </div>
-          </div>
-        </template>
-        <template #matches>
-          <UAccordion :items="date.matches" multiple>
-            <template #default="{ item }: { item: Match }">
-              <UButton
-                color="white"
-                variant="ghost"
-                class="ml-0 pl-0 max-w-fit dark:hover:bg-transparent"
-              >
-                <div class="grid grid-row-2">
-                  <div
-                    class="flex flex-row gap-2 items-center font-black uppercase text-xl sm:text-4xl tracking-[-0.06em]"
-                  >
-                    <div class="team1">
-                      {{ item.team1.teamName }}
+          </template>
+          <template #matches>
+            <UAccordion :items="date.matches" multiple>
+              <template #default="{ item }: { item: Match }">
+                <UButton
+                  color="white"
+                  variant="ghost"
+                  class="ml-0 pl-0 max-w-fit dark:hover:bg-transparent"
+                >
+                  <div class="grid grid-row-2">
+                    <div
+                      class="flex flex-row gap-2 items-center font-black uppercase text-xl sm:text-4xl tracking-[-0.06em]"
+                    >
+                      <div class="team1">
+                        {{ item.team1.teamName }}
+                      </div>
+                      <div
+                        class="text-base lowercase italic font-serif font-medium"
+                      >
+                        vs
+                      </div>
+                      <div class="team2">
+                        {{ item.team2.teamName }}
+                      </div>
+                      <div
+                        v-if="item.matchIsFinished"
+                        class="text-xs sm:text-lg font-serif font-thin"
+                      >
+                        ({{ pointsOfTeam(item, "team1") }}
+                        :
+                        {{ pointsOfTeam(item, "team2") }})
+                      </div>
+                      <div v-else-if="predicted(item.matchID)">
+                        <UIcon name="i-heroicons-check" class="text-2xl" />
+                      </div>
                     </div>
                     <div
-                      class="text-base lowercase italic font-serif font-medium"
+                      class="text-base text-neutral-500 flex gap-3 font-serif italic font-thin place-self-start"
                     >
-                      vs
-                    </div>
-                    <div class="team2">
-                      {{ item.team2.teamName }}
-                    </div>
-                    <div
-                      v-if="item.matchIsFinished"
-                      class="text-xs sm:text-lg font-serif font-thin"
-                    >
-                      ({{ pointsOfTeam(item, "team1") }}
-                      :
-                      {{ pointsOfTeam(item, "team2") }})
-                    </div>
-                    <div v-else-if="predicted(item.matchID)">
-                      <UIcon name="i-heroicons-check" class="text-2xl" />
+                      <div class="items-center flex gap-1 text-neutral-500">
+                        <UIcon name="i-heroicons-clock" />
+                        {{ formatMatchTime(item.matchDateTime) }}
+                      </div>
+                      <div class="flex items-center gap-1">
+                        <UIcon name="i-heroicons-user-group-20-solid" />
+                        {{ item.group.groupName }}
+                      </div>
                     </div>
                   </div>
-                  <div
-                    class="text-base text-neutral-500 flex gap-3 font-serif italic font-thin place-self-start"
-                  >
-                    <div class="items-center flex gap-1 text-neutral-500">
-                      <UIcon name="i-heroicons-clock" />
-                      {{ formatMatchTime(item.matchDateTime) }}
-                    </div>
-                    <div class="flex items-center gap-1">
-                      <UIcon name="i-heroicons-user-group-20-solid" />
-                      {{ item.group.groupName }}
-                    </div>
-                  </div>
-                </div>
-              </UButton>
-            </template>
-            <template #details="{ item }: { item: Match }">
-              <MatchDetails
-                class="-mt-2 pb-4"
-                :details="item"
-                :group-id="route.params.id as string"
-                :predictions="predictions"
-                @saved="refreshPredictions"
-              />
-            </template>
-          </UAccordion>
-        </template>
-      </UAccordion>
-    </div>
-  </div>
+                </UButton>
+              </template>
+              <template #details="{ item }: { item: Match }">
+                <MatchDetails
+                  class="-mt-2 pb-4"
+                  :details="item"
+                  :group-id="route.params.id as string"
+                  :predictions="predictions"
+                  @saved="refreshPredictions"
+                />
+              </template>
+            </UAccordion>
+          </template>
+        </UAccordion>
+      </div>
+    </template>
+  </UAccordion>
 </template>
