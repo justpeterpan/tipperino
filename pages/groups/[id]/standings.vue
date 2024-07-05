@@ -228,9 +228,6 @@ const items = [{ name: u(0) || "who knows" }, { name: u(1) || "who knows" }];
                     >
                       {{ p.team1Name }} {{ p.team1Score }} : {{ p.team2Score }}
                       {{ p.team2Name }}
-                      {{
-                        getMatchResults(p.match, matches)?.[0]?.pointsTeam1 ?? 0
-                      }}
                       <span class="text-sm"
                         >({{
                           calcS(
