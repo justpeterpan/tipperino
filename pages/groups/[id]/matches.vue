@@ -49,6 +49,8 @@ const koMatchesPerDate = (
 </script>
 <template>
   <div>
+    <MatchList :matches-per-date="koMatchesPerDate('Halbfinale')" stage="4" />
+    <UDivider label="✦" class="my-8" />
     <MatchList
       :matches-per-date="koMatchesPerDate('Viertelfinale')"
       stage="8"
