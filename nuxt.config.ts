@@ -2,10 +2,12 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ["@nuxthub/core", "@nuxt/eslint", "@nuxt/ui", "nuxt-auth-utils"],
+
   hub: {
     database: true,
     remote: true,
   },
+
   runtimeConfig: {
     public: {
       api: process.env.API || "",
@@ -14,12 +16,14 @@ export default defineNuxtConfig({
       maxAge: 60 * 60 * 24 * 7, // 1 week
     },
   },
+
   nitro: {
     experimental: {
       // Enable Server API documentation within NuxtHub
       openAPI: true,
     },
   },
+
   app: {
     head: {
       meta: [
@@ -30,4 +34,6 @@ export default defineNuxtConfig({
       ],
     },
   },
+
+  compatibilityDate: "2024-07-09",
 });

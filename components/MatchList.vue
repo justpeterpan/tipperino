@@ -89,7 +89,7 @@ const round = computed(() => {
         <h3
           v-if="
             round !== 'Viertelfinale' &&
-            'Achtelfinale' &&
+            round !== 'Achtelfinale' &&
             round !== 'Gruppenphase'
           "
           class="mb-8 italic font-serif"

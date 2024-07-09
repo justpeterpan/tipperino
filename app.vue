@@ -60,7 +60,7 @@ async function saveUsername() {
 
 <template>
   <NuxtLoadingIndicator color="#10B981" />
-  <div class="antialiased">
+  <div class="antialiased max-w-screen-xl mx-auto">
     <nav class="h-16 w-full flex items-center">
       <ul class="w-full flex flex-row-reverse justify-between px-4">
         <li v-if="loggedIn">
