@@ -78,22 +78,12 @@ const round = computed(() => {
         <h2
           class="cursor-pointer text-4xl sm:text-5xl font-black uppercase tracking-[-0.06em]"
           :class="{
-            'mb-8':
-              round === 'Viertelfinale' ||
-              round === 'Gruppenphase' ||
-              round === 'Achtelfinale',
+            'mb-8': round !== 'Finale',
           }"
         >
           {{ round }}
         </h2>
-        <h3
-          v-if="
-            round !== 'Viertelfinale' &&
-            round !== 'Achtelfinale' &&
-            round !== 'Gruppenphase'
-          "
-          class="mb-8 italic font-serif"
-        >
+        <h3 v-if="round === 'Finale'" class="mb-8 italic font-serif">
           Ergebnis nach Verlängerung zählt bei Verlängerung.
         </h3>
       </div>
