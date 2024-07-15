@@ -125,7 +125,8 @@ function prepareGraphDataKo(): DataRecord[] {
   const finishedMatches =
     matches.value?.filter(
       (match) =>
-        match.matchIsFinished && match.group.groupName.includes("final")
+        (match.matchIsFinished && match.group.groupName.includes("final")) ||
+        match.group.groupName.includes("Finale")
     ) ?? [];
   const uniqueMatchDays = [
     ...new Set(
